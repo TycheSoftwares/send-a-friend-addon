@@ -29,6 +29,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 	class send_to_friend {
 			
 		public function __construct() {
+		    add_action( 'admin_notices', array( &$this, 'send_to_friend_error_notice' ) );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
 			// redirect to the 'tell a friend' page
@@ -42,7 +43,12 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		/*******************************************************
 		 * Functions
 		 ******************************************************/
-
+		function send_to_friend_error_notice() {
+		    if ( !is_plugin_active( 'woocommerce-booking/woocommerce-booking.php' ) ) {
+		        echo "<div class=\"error\"><p>WAPBK Send to a Friend Addon for Woocommerce Booking and Appointment Plugin is enabled but not effective. It requires WooCommerce Booking and Appointment plugin in order to work.</p></div>";
+		    }
+		}
+		
 		/**
 		 * List the ajax calls for the addon
 		 * 
