@@ -1,8 +1,8 @@
 <?php 
 /*
-Plugin Name: WAPBK Send to a Friend Addon for Woocommerce Booking and Appointment Plugin
+Plugin Name: Send to a Friend Addon
 Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin
-Description: This addon allows the end users to send product links to friends or book extra slots for bookable products 
+Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products 
 Version: 1.0
 Author: Tyche Softwares
 Author URI: http://www.tychesoftwares.com/
