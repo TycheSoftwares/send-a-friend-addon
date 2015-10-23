@@ -45,7 +45,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 ******************************************************/
 		function send_to_friend_error_notice() {
 		    if ( !is_plugin_active( 'woocommerce-booking/woocommerce-booking.php' ) ) {
-		        echo "<div class=\"error\"><p>WAPBK Send to a Friend Addon for Woocommerce Booking and Appointment Plugin is enabled but not effective. It requires WooCommerce Booking and Appointment plugin in order to work.</p></div>";
+		        echo "<div class=\"error\"><p>Send to a Friend Addon is enabled but not effective. It requires WooCommerce Booking and Appointment plugin in order to work.</p></div>";
 		    }
 		}
 		
