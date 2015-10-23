@@ -184,12 +184,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				if ( isset( $booking_settings['booking_date_lockout'] ) && ( $booking_settings['booking_date_lockout'] != '' || $booking_settings['booking_date_lockout'] != 0 ) ) {
 					$lockout = $booking_settings['booking_date_lockout'];
 					
-					foreach ( $order_dates as $k => $v ) {
-						if ( array_key_exists( $v, $dates_new_arr ) ) {
-							$availability = $lockout - $dates_new_arr[$v];
-						} else {
-							$availability = $lockout;
-						}
+					$date_to_check = $order_dates[0];
+					if ( array_key_exists( $date_to_check, $dates_new_arr ) ) {
+						$availability = $lockout - $dates_new_arr[$date_to_check];
+					} else {
+						$availability = $lockout;
 					}
 				}
 				else {
