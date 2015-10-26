@@ -134,8 +134,12 @@ get_header();
 						action: 'bkap_send_email_to_friend'
 				};
 				jQuery.post( '<?php echo get_admin_url(); ?>admin-ajax.php', data, function( response ) {
-					document.getElementById( "tell_a_friend" ).style.display = "none";
-					document.getElementById( "tell_another_friend" ).style.display = "block";
+					if ( response.length === 0 ) {
+						document.getElementById( "tell_a_friend" ).style.display = "none";
+						document.getElementById( "tell_another_friend" ).style.display = "block";
+					} else {
+						alert(response);
+					}
 				});
 			}
 	</script>

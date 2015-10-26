@@ -111,7 +111,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					?>
 					<br><br>
 					<?php 
-					echo $message;
+					echo __( $message );
 					$parm = array( 'send-booking-to-friend' => 1,
 							'order_id' => $order->id );
 					?> 
@@ -281,11 +281,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								<tr style='background-color:#f4f5f4;'>
 								<th>Product</th><td></td>
 								</tr>";
+			$item_count = 0;
 			foreach ( $items as $key => $value ) {
 				// Add the product in the table only if it has been selected by the client on the 'Tell a Friend' Page
 				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value['product_id'], $products ) ) {
-					$product_table .= "<tr>
-										<td>";
 					// Product link
 					$product_link = get_permalink( $value['product_id'] );
 					// Add order Id to product link
@@ -299,55 +298,71 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					if ( isset( $value['wapbk_time_slot'] ) ) {
 						$time_slot = $value['wapbk_time_slot'];
 					}
-					$product_table .= "<a href='" . $product_link . "'>" . $value['name'] . "</a><br>";
-					$product_table .= "<b>" . $booking_date_label . ":</b><br>".
-										$value[$booking_date_label];
-					if ( isset( $value[$checkout_date_label] ) ) {
-						$product_table .= "<br><b>" . $checkout_date_label . ":</b><br>".
-								$value[$checkout_date_label];
-					}
-					if ( isset( $value[$booking_time_label] ) ) {
-						$product_table .= "<br><b>" . $booking_time_label . ":</b><br>".
-								$value[$booking_time_label];
-					}
-					$product_table .= '</td>';
 					// Get the availability for the product
 					$availability = $this->get_availability( $value['product_id'], $booking_date, $checkout_date, $time_slot );
-					
-					// check the booking type
-					$booking_settings = get_post_meta( $value['product_id'], 'woocommerce_booking_settings', true);
 						
-					$message = wapbk_send_friend( 'book.availability-order-received1' ) . $availability . wapbk_send_friend( 'book.availability-order-received2' );
-					if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
-						$message .= wapbk_send_friend( 'book.availability-multiple-order-received' );
+					$display = 'NO';
+					if ( $availability > 0 ) {
+						$display = 'YES';
+					} else if ( $availability === "Unlimited" ) {
+						$display = 'YES';
 					}
-					else if( $booking_settings['booking_enable_time'] == 'on' ) {
-						$message .= wapbk_send_friend( 'book.availability-time-order-received' );
-					}
-					else {
-						$message .= wapbk_send_friend( 'book.availability-single-order-received' );
-					}
-					// Display availability message and the button to allow the user to directly book an order.
-					$product_table .= "<td>" . $message . "<br>";
-					$product_table .= "<a href='" . $button_link . "'><input type='button' class='button' style='width:150px;' id='book_me_in' name='book_me_in' value='Book me in!' /></a></td></tr>";					
+					if ( $display == 'YES' ) {
+						$item_count++;
+						$product_table .= "<tr>
+										<td>";
+						$product_table .= "<a href='" . $product_link . "'>" . $value['name'] . "</a><br>";
+						$product_table .= "<b>" . $booking_date_label . ":</b><br>".
+											$value[$booking_date_label];
+						if ( isset( $value[$checkout_date_label] ) ) {
+							$product_table .= "<br><b>" . $checkout_date_label . ":</b><br>".
+									$value[$checkout_date_label];
+						}
+						if ( isset( $value[$booking_time_label] ) ) {
+							$product_table .= "<br><b>" . $booking_time_label . ":</b><br>".
+									$value[$booking_time_label];
+						}
+						$product_table .= '</td>';
+						
+						// check the booking type
+						$booking_settings = get_post_meta( $value['product_id'], 'woocommerce_booking_settings', true);
+							
+						$message = wapbk_send_friend( 'book.availability-order-received1' ) . $availability . wapbk_send_friend( 'book.availability-order-received2' );
+						if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
+							$message .= wapbk_send_friend( 'book.availability-multiple-order-received' );
+						}
+						else if( $booking_settings['booking_enable_time'] == 'on' ) {
+							$message .= wapbk_send_friend( 'book.availability-time-order-received' );
+						}
+						else {
+							$message .= wapbk_send_friend( 'book.availability-single-order-received' );
+						}
+						// Display availability message and the button to allow the user to directly book an order.
+						$product_table .= "<td>" . $message . "<br>";
+						$product_table .= "<a href='" . $button_link . "'><input type='button' class='button' style='width:150px;' id='book_me_in' name='book_me_in' value='Book me in!' /></a></td></tr>";
+					}					
 				}
 			} 
 			$product_table .= '</table>';
-			$email_content = str_replace( '<product_list>', $product_table, $email_content );
-			// Personalized msg
-			$email_content = str_replace( '<personalized_message>', $_POST['msg_txt'], $email_content );
-			// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
-			$recepients = $_POST['friend_email'];
-			// Create the header, mark admin and client in cc
-			$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
-			$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
-			$headers .= "Content-Type: text/html"."\r\n";
-			$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
-		//	mail('pinalj1612@gmail.com','headers woo_pinal',$headers);
-			// email subject
-			$email_subject = 'Join me at ' . get_option( 'blogname' );
-			// Send the email
-			wp_mail( $recepients, $email_subject, $email_content, $headers );
+			if ( $item_count > 0 ) {
+				$email_content = str_replace( '<product_list>', $product_table, $email_content );
+				// Personalized msg
+				$email_content = str_replace( '<personalized_message>', $_POST['msg_txt'], $email_content );
+				// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
+				$recepients = $_POST['friend_email'];
+				// Create the header, mark admin and client in cc
+				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
+				$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
+				$headers .= "Content-Type: text/html"."\r\n";
+				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
+				// email subject
+				$email_subject = __('Join me at ' . get_option( 'blogname' ) );
+				$email_content_final = __( $email_content );
+				// Send the email
+				wp_mail( $recepients, $email_subject, $email_content_final, $headers );
+			} else {
+				print __('Email could not be sent as all the items have been fully booked');
+			}
 			die();
 		}
 		
