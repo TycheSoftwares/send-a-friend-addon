@@ -158,6 +158,19 @@ get_header();
 	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
 	<script type="text/javascript">
 	function send_another() {
+		// set the hidden product list to select all the products
+		jQuery( '#selected_products' ).val( '<?php echo $product_list; ?>' );
+		// make sure that all the product checkboxes are selected as well
+		<?php 
+		foreach ( $items as $key => $value ) {
+			?>
+			jQuery( '#product_<?php echo $value['product_id']; ?>' ).attr( 'checked', true );
+			<?php 
+		}
+		?>
+		// set the friend's email field and personalized message to blanks
+		jQuery( '#friend_email' ).val( '' );
+		jQuery( '#email_message' ).val( '' );
 		document.getElementById( "tell_a_friend" ).style.display = "block";
 		document.getElementById( "tell_another_friend" ).style.display = "none";
 	}
