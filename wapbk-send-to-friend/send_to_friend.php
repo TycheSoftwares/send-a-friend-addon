@@ -7,14 +7,6 @@ Version: 1.0
 Author: Tyche Softwares
 Author URI: http://www.tychesoftwares.com/
 */
-/******************************************
- *Return if the Booking plugin is inactive 
- *****************************************/
-if ( in_array( 'woocommerce-booking/woocommerce-booking.php', get_option( 'active_plugins' ) ) ) {
-}
-else {
-	return;
-}
 /**
  * Localisation
  **/
@@ -29,7 +21,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 	class send_to_friend {
 			
 		public function __construct() {
+			// Display a notice in the admin, when the addon is enabled without the base plugin
 		    add_action( 'admin_notices', array( &$this, 'send_to_friend_error_notice' ) );
+		    // Add the new settings tab for the addon
+		    add_action( 'bkap_add_global_settings_tab', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
 			// redirect to the 'tell a friend' page
@@ -43,6 +38,15 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		/*******************************************************
 		 * Functions
 		 ******************************************************/
+		/**
+		 * Display admin notice
+		 * 
+		 * A notice is displayed in the admin section when the 
+		 * addon is activate and the Woocommerce Booking and Appointment
+		 * plugin is inactive.
+		 * 
+		 * @since 1.0
+		 */
 		function send_to_friend_error_notice() {
 		    if ( !is_plugin_active( 'woocommerce-booking/woocommerce-booking.php' ) ) {
 		        echo "<div class=\"error\"><p>Send to a Friend Addon is enabled but not effective. It requires WooCommerce Booking and Appointment plugin in order to work.</p></div>";
@@ -64,6 +68,109 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		}
 		
 		/**
+		 * Add a new tab in Booking->Settings menu
+		 *
+		 * This function adds a new tab Send a Friend Addon Settings tab
+		 * in the Booking->Settings menu, thereby allowing the site owner
+		 * to make settings for the addon
+		 *
+		 *  @since 1.0
+		 */
+		function bkap_send_friend_tab() {
+			if ( isset( $_GET['action'] ) ) {
+				$action = $_GET['action'];
+			} else {
+				$action = '';
+			}
+			if ( $action == 'send_friend' ) {
+				$active_friend_settings = "nav-tab-active";
+			} else {
+				$active_friend_settings = '';
+			}
+			?>
+			<a href="admin.php?page=woocommerce_booking_page&action=send_friend" class="nav-tab <?php echo $active_friend_settings; ?>"> <?php _e( 'Send to a Friend Addon Settings', 'woocommerce-booking' );?> </a>
+			<?php 
+			if ( $action == 'send_friend' ) {
+				// Save the field values
+				if ( isset( $_POST['wapbk_send_friend_settings_frm'] ) && $_POST['wapbk_send_friend_settings_frm'] == 'save' ) {
+					$booking_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
+					if ( !isset( $booking_settings ) || $booking_settings == '' ) {
+						$booking_settings = new stdClass();
+					}
+					$booking_settings->enable_send_a_friend = $booking_settings->enable_admin_cc = '';
+					if ( isset( $_POST['enable_send_a_friend'] ) ) {
+						$booking_settings->enable_send_a_friend = $_POST['enable_send_a_friend'];
+					}
+					if ( isset( $_POST['enable_admin_cc'] ) ) {
+						$booking_settings->enable_admin_cc = $_POST['enable_admin_cc'];
+					}
+					$woocommerce_booking_settings = json_encode($booking_settings);
+					update_option( 'woocommerce_booking_global_settings', $woocommerce_booking_settings );
+				}
+				if ( isset( $_POST['wapbk_send_friend_settings_frm'] ) && $_POST['wapbk_send_friend_settings_frm'] == 'save' ) {
+					?>
+					<div id="message" class="updated fade"><p><strong><?php _e( 'Your settings have been saved.', 'woocommerce-booking' ); ?></strong></p></div>
+					<?php 
+				}
+				$saved_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
+				?>
+				<div id="content">
+			      	<form method="post" action="" id="booking_settings">
+			           	<input type="hidden" name="wapbk_send_friend_settings_frm" value="save">
+			            <div id="poststuff">
+			    	    	<div class="postbox">
+			                	<h3 class="hndle"><?php _e( 'Send to a Friend Addon Settings', 'woocommerce-booking' ); ?></h3>
+			                    <div>
+			                     	<table class="form-table" style="max-width:450px; width:100%;">
+			        	            	<tr>
+			                             	<td>
+			                                  	<label for="enable_send_a_friend"><b><?php _e( 'Enable a user to send booking details to a Friend:', 'woocommerce-booking' ); ?></b></label>
+			                                </td>
+			                                <td>
+			                                  	<?php 
+			                                   	$send_a_friend = '';
+			                                   	if ( isset( $saved_settings->enable_send_a_friend ) && $saved_settings->enable_send_a_friend == 'on') {
+			                                   		$send_a_friend = 'checked';
+			                                   	}
+			                                   	?>
+			                                   	<input type="checkbox" id="enable_send_a_friend" name="enable_send_a_friend" <?php echo $send_a_friend; ?>/>
+			                                    <img class="help_tip" width="16" height="16" data-tip="<?php _e( 'Shows the \'Book Another\' and \'Send a Friend\' buttons on the Order Received page and Order emails. On clicking the buttons, users will be taken to the respective pages.', 'woocommerce-booking' ); ?>" src="<?php echo plugins_url() ;?>/woocommerce/assets/images/help.png" />
+			                                </td>
+			                          	</tr>
+			                            <tr>
+			                            	<td>
+			                                   	<label for="enable_admin_cc"><b><?php _e( 'Mark the admin in cc in emails sent to friends:', 'woocommerce-booking' ); ?></b></label>
+			                               	</td>
+			                                <td>
+			                                 	<?php 
+			                                  	$enable_admin_cc = '';
+			                                  	if ( isset( $saved_settings->enable_admin_cc ) && $saved_settings->enable_admin_cc == 'on') {
+			                                  		$enable_admin_cc = 'checked';
+			                                 	}
+			                                  	?>
+			                                  	<input type="checkbox" id="enable_admin_cc" name="enable_admin_cc" <?php echo $enable_admin_cc; ?>/>
+			                                    <img class="help_tip" width="16" height="16" data-tip="<?php _e( 'Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'woocommerce-booking' ); ?>" src="<?php echo plugins_url() ;?>/woocommerce/assets/images/help.png" />
+			                               	</td>
+			                          	</tr>
+			                      	</table>
+								</div>
+			        	       	<table class="form-table">
+			                    	<?php do_action( 'bkap_send_a_friend_settings' );?>
+			                        <tr>
+			                        	<td>
+			                       			<input type="submit" name="Submit" class="button-primary" value="<?php _e( 'Save Changes', 'woocommerce-booking' ); ?>" />
+			                	  	    </td>
+			            	        </tr>
+			        	        </table>
+			              	</div>
+			            </div>
+			     	</form>
+				</div>
+				<?php 
+			}
+		}
+				
+		/**
 		 * Add buttons on the Thank You page and order emails
 		 * 
 		 * This function adds the availability left and the Book
@@ -76,7 +183,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$product_id = $item['product_id'];
 			// Booking Settings
 			$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
-			if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' ) {
+			$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
+			if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' && isset( $global_settings->enable_send_a_friend ) && $global_settings->enable_send_a_friend == 'on' ) {
 				// Get the booking details
 				$booking_date = $item['wapbk_booking_date'];
 				$checkout_date = $booking_time = '';
@@ -260,6 +368,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */ 
 		function bkap_send_email_to_friend() {
+			// get the global booking settings
+			$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
 			// get the order object
 			$order = new WC_Order( $_POST['order_id'] );
 			$items = $order->get_items();
@@ -352,7 +462,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$recepients = $_POST['friend_email'];
 				// Create the header, mark admin and client in cc
 				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
-				$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
+				if ( isset( $global_settings->enable_admin_cc ) && $global_settings->enable_admin_cc == 'on' ) {
+					$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
+				} else {
+					$headers .= "Cc: " . $_POST['client_email'] . "\r\n";
+				}
 				$headers .= "Content-Type: text/html"."\r\n";
 				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
 				// email subject
