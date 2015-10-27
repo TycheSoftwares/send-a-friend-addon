@@ -550,6 +550,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					// get the booking details from the woocommerce_order_itemmeta table
 					$booking_details = WC_Abstract_Order::get_item_meta( $item_id );
 					
+					if ( isset( $booking_details['_variation_id'][0] ) && $booking_details['_variation_id'][0] != '' ) {
+						$attribute_array = array();
+						$attr = wc_get_product_variation_attributes($booking_details['_variation_id'][0]);
+						if ( isset( $attr ) && is_array( $attr ) && count( $attr ) > 0 ) {
+							foreach( $attr as $attr_key => $attr_value ) {
+								$attribute_name_array = explode( '_', $attr_key );
+								$attribute_array[$attribute_name_array[1]] = $attr_value;
+							}
+						}
+					}
+					
 					if ( isset( $booking_details['_wapbk_booking_date'][0] ) ) {
 						$booking_date = $booking_details['_wapbk_booking_date'][0];
 						// Date formats
@@ -564,7 +575,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					// if multiple days is enabled, fetch the checkout date
 					if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
 						if ( isset( $booking_details['_wapbk_checkout_date'] ) ) {
-							$checkout_date = $booking_details['_wapbk_checkout_date'];
+							$checkout_date = $booking_details['_wapbk_checkout_date'][0];
 							$hidden_date_checkout = date( 'j-n-Y', strtotime( $checkout_date ) );
 						}
 					}
@@ -607,6 +618,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						?>
 						<script type="text/javascript">
 						function bkap_init() {
+							// If it's a variable product, populate the variations first
+							<?php
+							if ( isset( $attribute_array ) && is_array( $attribute_array ) && count( $attribute_array ) > 0 ) {
+								foreach( $attribute_array as $attr_key => $attr_value ) {
+									?>
+									jQuery( "#<?php echo $attr_key;?>").val('<?php echo $attr_value;?>');
+									<?php
+								} 
+							} 
+							?>
+							// Populate the Booking date
 							jQuery( "#wapbk_hidden_date" ).val( '<?php echo $hidden_date; ?>' );
 							var split = jQuery( "#wapbk_hidden_date" ).val().split( "-" );
 							var bookingDate = new Date( split[2], split[1]-1, split[0] );
@@ -624,6 +646,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								jQuery( "#booking_calender" ).datepicker( "setDate", bookingDate );
 							<?php 
 							}?>
+							// If time is enabled then populate the selected slot
 							if ( jQuery( "#wapbk_bookingEnableTime" ).val() == "on" && jQuery( "#wapbk_booking_times" ).val() == "YES" ) {
 								var sold_individually = jQuery( "#wapbk_sold_individually" ).val();
 								jQuery( "#ajax_img" ).show();
