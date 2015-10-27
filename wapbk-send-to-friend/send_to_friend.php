@@ -550,7 +550,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					// get the booking details from the woocommerce_order_itemmeta table
 					$booking_details = WC_Abstract_Order::get_item_meta( $item_id );
 					
-					if ( isset( $booking_details['_variation_id'][0] ) && $booking_details['_variation_id'][0] != '' ) {
+					if ( isset( $booking_details['_variation_id'][0] ) && $booking_details['_variation_id'][0] != 0 ) {
 						$attribute_array = array();
 						$attr = wc_get_product_variation_attributes($booking_details['_variation_id'][0]);
 						if ( isset( $attr ) && is_array( $attr ) && count( $attr ) > 0 ) {
@@ -667,6 +667,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 									?>
 										// Pre-populate the time slots with the order time slots
 										jQuery( "#time_slot" ).val( '' );
+										jQuery( "#show_stock_status" ).html( "The time slot <?php echo $booking_time; ?> is a past time slot. Please select another slot." );
 									<?php 
 									} else {?>
 										// Pre-populate the time slots with the order time slots
