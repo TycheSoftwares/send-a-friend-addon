@@ -368,6 +368,18 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */ 
 		function bkap_send_email_to_friend() {
+			// check if the email address field is populated for the friends
+			if( isset( $_POST['friend_email'] ) ) {
+				if ( trim( $_POST['friend_email'] ) == '' ) {
+					$message = 'Please enter the email address of atleast one friend.';
+					wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
+					$parm = array( 'send-booking-to-friend' => 1,
+							'order_id' => $_POST['order_id'] );
+			
+					echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ) );
+					die;
+				}
+			}
 			// get the global booking settings
 			$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
 			// get the order object
@@ -459,7 +471,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				// Personalized msg
 				$email_content = str_replace( '<personalized_message>', $_POST['msg_txt'], $email_content );
 				// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
-				$recepients = $_POST['friend_email'];
+				$recipients = $_POST['friend_email'];
 				// Create the header, mark admin and client in cc
 				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
 				if ( isset( $global_settings->enable_admin_cc ) && $global_settings->enable_admin_cc == 'on' ) {
@@ -467,16 +479,23 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				} else {
 					$headers .= "Cc: " . $_POST['client_email'] . "\r\n";
 				}
+				$headers .= "Bcc: " . $recipients . "\r\n";
 				$headers .= "Content-Type: text/html"."\r\n";
 				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
 				// email subject
 				$email_subject = __('Join me at ' . get_option( 'blogname' ) );
 				$email_content_final = __( $email_content );
 				// Send the email
-				wp_mail( $recepients, $email_subject, $email_content_final, $headers );
+				wp_mail( '', $email_subject, $email_content_final, $headers );
+				$message = 'Email sent successfully.';
+				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'success');
 			} else {
-				print __('Email could not be sent as all the items have been fully booked');
+				$message = 'Email could not be sent as all the items have been fully booked.';
+				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
 			}
+			$parm = array( 'send-booking-to-friend' => 1,
+					'order_id' => $_POST['order_id'] );
+			echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ) );
 			die();
 		}
 		

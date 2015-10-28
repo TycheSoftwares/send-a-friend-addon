@@ -1,11 +1,21 @@
 <?php
 get_header();
+$show_tell_friend = 'block';
+$show_another_friend = 'none';
+$all_notices  = WC()->session->get( 'wc_notices', array() );
+foreach( $all_notices as $key => $value ) {
+	if ( $key == 'success' && $value[0] == 'Email sent successfully.' ) {
+		$show_tell_friend = 'none';
+		$show_another_friend = 'block';
+	}
+}
+wc_print_notices();
 ?>
 <div id="content" class="col-full">
 <h1>Tell a friend</h1>
 <body>
 <br>
-<div id="tell_a_friend">
+<div id="tell_a_friend" style="display:<?php echo $show_tell_friend; ?>">
 	<p>
 		Enter the details of your friends below and we'll email them (copying you in) inviting them to join you on your volunteering days below.
 	</p>
@@ -118,34 +128,24 @@ get_header();
 	<input type="button" class="button" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?>" onclick="bkap_send_email(<?php echo $_GET['order_id'];?>)" />
 	 
 	<script type="text/javascript">
-		 function bkap_send_email( id ) {
-			 var email_addr = jQuery( '#friend_email' ).val().trim();
-			 if ( email_addr == '' ) {
-				 alert( 'Please enter the email address of at least one friend.' );
-			 	 return;			
-			 }
-				var data = {
-						order_id: id,
-						details: jQuery( '#selected_products' ).val(),
-						client_name: jQuery( '#client_name' ).val(),
-						client_email: jQuery( '#client_email' ).val(),
-						friend_email: jQuery( '#friend_email' ).val(),
-						msg_txt: jQuery( '#email_message' ).val(),
-						action: 'bkap_send_email_to_friend'
-				};
-				jQuery.post( '<?php echo get_admin_url(); ?>admin-ajax.php', data, function( response ) {
-					if ( response.length === 0 ) {
-						document.getElementById( "tell_a_friend" ).style.display = "none";
-						document.getElementById( "tell_another_friend" ).style.display = "block";
-					} else {
-						alert(response);
-					}
-				});
-			}
+		function bkap_send_email( id ) {
+			var data = {
+				order_id: id,
+				details: jQuery( '#selected_products' ).val(),
+				client_name: jQuery( '#client_name' ).val(),
+				client_email: jQuery( '#client_email' ).val(),
+				friend_email: jQuery( '#friend_email' ).val(),
+				msg_txt: jQuery( '#email_message' ).val(),
+				action: 'bkap_send_email_to_friend'
+			};
+			jQuery.post( '<?php echo get_admin_url(); ?>admin-ajax.php', data, function( response ) {
+				window.location.replace(response);
+			});
+		}
 	</script>
 	<p></p>
 </div>
-<div id="tell_another_friend" style="display:none">
+<div id="tell_another_friend" style="display:<?php echo $show_another_friend; ?>">
 	<p>
 		Thank you for sharing with a friend. 
 	</p>
@@ -153,28 +153,13 @@ get_header();
 		They have been notified via email and you have been copied in.
 	</p>
 	<br>
-	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="send_another()" />
+	<?php 
+	$parm = array( 'send-booking-to-friend' => 1,
+					'order_id' => $_GET['order_id'] );
+	?>
+	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ); ?>');" />
 	<br><br>
 	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
-	<script type="text/javascript">
-	function send_another() {
-		// set the hidden product list to select all the products
-		jQuery( '#selected_products' ).val( '<?php echo $product_list; ?>' );
-		// make sure that all the product checkboxes are selected as well
-		<?php 
-		foreach ( $items as $key => $value ) {
-			?>
-			jQuery( '#product_<?php echo $value['product_id']; ?>' ).attr( 'checked', true );
-			<?php 
-		}
-		?>
-		// set the friend's email field and personalized message to blanks
-		jQuery( '#friend_email' ).val( '' );
-		jQuery( '#email_message' ).val( '' );
-		document.getElementById( "tell_a_friend" ).style.display = "block";
-		document.getElementById( "tell_another_friend" ).style.display = "none";
-	}
-	</script>
 	<p></p>
 </div>
 </body>
