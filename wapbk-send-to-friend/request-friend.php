@@ -157,7 +157,7 @@ wc_print_notices();
 	$parm = array( 'send-booking-to-friend' => 1,
 					'order_id' => $_GET['order_id'] );
 	?>
-	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ); ?>');" />
+	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) ); ?>');" />
 	<br><br>
 	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
 	<p></p>

@@ -376,7 +376,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$parm = array( 'send-booking-to-friend' => 1,
 							'order_id' => $_POST['order_id'] );
 			
-					echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ) );
+					echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) ) );
 					die;
 				}
 			}
@@ -495,7 +495,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			}
 			$parm = array( 'send-booking-to-friend' => 1,
 					'order_id' => $_POST['order_id'] );
-			echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) ) );
+			echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) ) );
 			die();
 		}
 		
