@@ -225,7 +225,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					?> 
 					<br>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>"><input type="button" class="button" style="padding-top:5px; padding-bottom:5px;" id="book_another" name="book_another" value="<?php _e( 'BOOK ANOTHER SPACE', 'woocommerce-booking' ); ?>" /></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'shop' ) ) ) );?>"><input type="button" class="button" style="padding-top:5px; padding-bottom:5px;" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?>" /></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>"><input type="button" class="button" style="padding-top:5px; padding-bottom:5px;" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?>" /></a>
 				<?php 	 
 				}
 			}
