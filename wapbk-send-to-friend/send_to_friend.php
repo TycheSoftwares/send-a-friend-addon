@@ -597,6 +597,19 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$checkout_date = $booking_details['_wapbk_checkout_date'][0];
 							$hidden_date_checkout = date( 'j-n-Y', strtotime( $checkout_date ) );
 						}
+						// check if fixed blocks is enabled, if yes then calculate the difference between the checkin and checkout date and populate the fixed block name
+						if( isset( $booking_settings['booking_fixed_block_enable'] ) && $booking_settings['booking_fixed_block_enable']  == 'yes' ) {
+							$number_of_days =  strtotime( $checkout_date ) - strtotime( $booking_date );
+							$number = floor( $number_of_days / ( 60*60*24 ) );
+							$fixed_block_query = "SELECT start_day, price FROM `".$wpdb->prefix."booking_fixed_blocks`
+													WHERE number_of_days = %d
+													AND post_id = %d";
+							$results_fixed_blocks = $wpdb->get_results( $wpdb->prepare( $fixed_block_query, $number, $duplicate_of ) );
+								
+							if( isset( $results_fixed_blocks ) && is_array( $results_fixed_blocks ) && count( $results_fixed_blocks ) > 0 ) {
+								$fixed_block_name = $results_fixed_blocks[0]->start_day . '&' . $number . '&' . $results_fixed_blocks[0]->price;
+							}
+						}
 					}
 					// if time settings is enabled, fetch the time slot selected
 					if( $booking_settings['booking_enable_time'] == 'on' ) {
@@ -729,6 +742,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							} else {
 								// check if multiple day is enabled, if yes then pre-populate the end date
 								if ( jQuery( "#booking_calender_checkout" ).length ) {
+									// populate fixed blocks name if its enabled
+									if ( jQuery( "#block_option" ).length ) {
+										jQuery( "#block_option" ).val( '<?php echo $fixed_block_name; ?>' );
+									}
+									// populate the checkout date
 									jQuery( "#wapbk_hidden_date_checkout" ).val( '<?php echo $hidden_date_checkout; ?>' );
 									var split = jQuery( "#wapbk_hidden_date_checkout" ).val().split( "-" );
 									var bookingDate = new Date( split[2], split[1]-1, split[0] );
