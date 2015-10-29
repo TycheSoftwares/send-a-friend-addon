@@ -767,6 +767,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 									}?>
 									jQuery( ".single_add_to_cart_button" ).show();
 									jQuery( ".quantity" ).show();
+									bkap_single_day_price();
 									bkap_calculate_price();
 								} else {
 									jQuery( ".single_add_to_cart_button" ).show();
