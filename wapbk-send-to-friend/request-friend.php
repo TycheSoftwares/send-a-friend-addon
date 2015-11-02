@@ -1,8 +1,7 @@
 <?php
-get_header();
-$show_tell_friend = 'block';
+$show_tell_friend    = 'block';
 $show_another_friend = 'none';
-$all_notices  = WC()->session->get( 'wc_notices', array() );
+$all_notices         = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
 	if ( $key == 'success' && $value[0] == 'Email sent successfully.' ) {
 		$show_tell_friend = 'none';
@@ -12,8 +11,6 @@ foreach( $all_notices as $key => $value ) {
 wc_print_notices();
 ?>
 <div id="content" class="col-full">
-<h1>Tell a friend</h1>
-<body>
 <br>
 <div id="tell_a_friend" style="display:<?php echo $show_tell_friend; ?>">
 	<p>
@@ -162,8 +159,4 @@ wc_print_notices();
 	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
 	<p></p>
 </div>
-</body>
 </div>
-<?php
-get_footer();
-?>

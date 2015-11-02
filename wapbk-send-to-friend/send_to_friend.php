@@ -12,6 +12,7 @@ Author URI: http://www.tychesoftwares.com/
  **/
 load_plugin_textdomain('woocommerce-booking', false, dirname( plugin_basename( __FILE__ ) ) . '/');
 include_once( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/lang.php' );
+include_once( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/bkap_tell_a_friend_page.php' );
 
 /**
  * send_to_friend class
@@ -29,8 +30,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    add_action( 'bkap_add_global_settings_tab', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
+			
 			// redirect to the 'tell a friend' page
-			add_action( 'template_include', array( &$this, 'bkap_request_friend_redirect' ), 99, 1 );
+			add_action( 'init', array( &$this, 'load_tell_a_friend_page' ) );
+			
 			// Ajax calls
 			add_action( 'init', array( &$this, 'bkap_send_friend_load_ajax' ) );
 			// pre-populate date and time slots on the front end product page
@@ -573,25 +576,33 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 			return $availability;
 		}
-		
-		/**
-		 * Redirect Tell a Friend page
+
+		/*
+		 * Load Tell a Friend page by creating a virtual page so it works with all themes
 		 * 
-		 * redirects to the 'Tell a Friend' page when the 'Send 
-		 * to a Friend' button is clicked on the Order Received
-		 * Page
-		 * 
+		 * the content passed to that page is of the view file 'request-friend.php'
+		 * that content is loaded in a variable using output buffering functions - ob_start, ob_get_contents, ob_end_clean
 		 * @since 1.0
-		 * @return str $template
+		 * creates new page object & adds to $posts array in bkap_tell_a_friend_page()
 		 */
-		function bkap_request_friend_redirect( $template ) {
+		function load_tell_a_friend_page() {
+
 			if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 ) {
+				
+				ob_start();
 				$templatefilename = 'request-friend.php';
 				if ( file_exists( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/' . $templatefilename ) ) {
-           			$template = ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/' . $templatefilename;
-        		} 
+					$template = ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/' . $templatefilename;
+					include( $template );
+				}
+				$content = ob_get_contents();
+				ob_end_clean();
+				
+				$args = array( 'slug'    => '',
+							   'title'   => 'Tell a friend',
+							   'content' => $content );
+				$pg = new bkap_tell_a_friend_page( $args );
 			}
-			return $template;
 		}
 		
 		/**
@@ -1057,4 +1068,5 @@ if ( !class_exists( 'send_to_friend' ) ) {
 	}
 	$send_to_friend = new send_to_friend();
 }
+
 ?>
