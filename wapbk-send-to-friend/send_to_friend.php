@@ -799,11 +799,15 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				
 					$booking_settings = get_post_meta( $duplicate_of, 'woocommerce_booking_settings', true );
 					// get the booking details from the woocommerce_order_itemmeta table
-					$booking_details = WC_Abstract_Order::get_item_meta( $item_id );
+					$booking_details = array();
+					$booking_details['_variation_id'] = wc_get_order_item_meta( $item_id, '_variation_id' );
+					$booking_details['_wapbk_booking_date'] = wc_get_order_item_meta( $item_id, '_wapbk_booking_date' );
+					$booking_details['_wapbk_checkout_date'] = wc_get_order_item_meta( $item_id, '_wapbk_checkout_date' );
+					$booking_details['_wapbk_time_slot'] = wc_get_order_item_meta( $item_id, '_wapbk_time_slot' );
 					
-					if ( isset( $booking_details['_variation_id'][0] ) && $booking_details['_variation_id'][0] != 0 ) {
+					if ( isset( $booking_details['_variation_id'] ) && $booking_details['_variation_id'] != 0 ) {
 						$attribute_array = array();
-						$attr = wc_get_product_variation_attributes($booking_details['_variation_id'][0]);
+						$attr = wc_get_product_variation_attributes($booking_details['_variation_id']);
 						if ( isset( $attr ) && is_array( $attr ) && count( $attr ) > 0 ) {
 							foreach( $attr as $attr_key => $attr_value ) {
 								$attribute_name_array = explode( '_', $attr_key );
@@ -812,8 +816,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						}
 					}
 					
-					if ( isset( $booking_details['_wapbk_booking_date'][0] ) ) {
-						$booking_date = $booking_details['_wapbk_booking_date'][0];
+					if ( isset( $booking_details['_wapbk_booking_date'] ) ) {
+						$booking_date = $booking_details['_wapbk_booking_date'];
 						// Date formats
 						$date_formats = bkap_get_book_arrays('date_formats');
 						// get the global settings to find the date & time formats
@@ -826,7 +830,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					// if multiple days is enabled, fetch the checkout date
 					if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
 						if ( isset( $booking_details['_wapbk_checkout_date'] ) ) {
-							$checkout_date = $booking_details['_wapbk_checkout_date'][0];
+							$checkout_date = $booking_details['_wapbk_checkout_date'];
 							$hidden_date_checkout = date( 'j-n-Y', strtotime( $checkout_date ) );
 						}
 						// check if fixed blocks is enabled, if yes then calculate the difference between the checkin and checkout date and populate the fixed block name
@@ -845,8 +849,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					}
 					// if time settings is enabled, fetch the time slot selected
 					if( $booking_settings['booking_enable_time'] == 'on' ) {
-						if ( isset( $booking_details['_wapbk_time_slot'][0] ) ) {
-							$booking_time = $booking_details['_wapbk_time_slot'][0];
+						if ( isset( $booking_details['_wapbk_time_slot'] ) ) {
+							$booking_time = $booking_details['_wapbk_time_slot'];
 							// create a time stamp for the booking date and start time
 							$time_explode = explode( '-', $booking_time );
 							$book_date = $booking_date . ' ' . $time_explode[0];
