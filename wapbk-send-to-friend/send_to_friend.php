@@ -224,8 +224,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							'order_id' => $order->id );
 					?> 
 					<br>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>"><input type="button" class="button" style="padding-top:5px; padding-bottom:5px;" id="book_another" name="book_another" value="<?php _e( 'BOOK ANOTHER SPACE', 'woocommerce-booking' ); ?>" /></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>"><input type="button" class="button" style="padding-top:5px; padding-bottom:5px;" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?>" /></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( 'BOOK ANOTHER SPACE', 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -407,8 +407,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			foreach ( $items as $key => $value ) {
 				// Add the product in the table only if it has been selected by the client on the 'Tell a Friend' Page
 				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value['product_id'], $products ) ) {
-					// Product link
-					$product_link = get_permalink( $value['product_id'] );
 					// Add order Id to product link
 					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $value['product_id'] ) ) );
 					// Add the product name, booking details
@@ -433,7 +431,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$item_count++;
 						$product_table .= "<tr>
 										<td>";
-						$product_table .= "<a href='" . $product_link . "'>" . $value['name'] . "</a><br>";
+						$product_table .= "<a href='" . $button_link . "'>" . $value['name'] . "</a><br>";
 						$product_table .= "<b>" . $booking_date_label . ":</b><br>".
 											$value[$booking_date_label];
 						if ( isset( $value[$checkout_date_label] ) ) {
@@ -461,7 +459,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						}
 						// Display availability message and the button to allow the user to directly book an order.
 						$product_table .= "<td>" . $message . "<br>";
-						$product_table .= "<a href='" . $button_link . "'><input type='button' class='button' style='width:150px;' id='book_me_in' name='book_me_in' value='Book me in!' /></a></td></tr>";
+						$product_table .= "<a href='" . $button_link . "' style='display: block;background: #f4f5f4;width: 110px;height: 15px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;'>Book me in!</a></td></tr>";
 					}					
 				}
 			} 
