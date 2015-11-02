@@ -22,7 +22,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 		public function __construct() {
 			// Display a notice in the admin, when the addon is enabled without the base plugin
-		    add_action( 'admin_notices', array( &$this, 'send_to_friend_error_notice' ) );
+		    add_action( 'admin_notices', array( &$this, 'bkap_send_to_friend_error_notice' ) );
+		    // Wordpress settings API
+		    add_action('admin_init', array( &$this, 'bkap_friend_plugin_options' ) );
 		    // Add the new settings tab for the addon
 		    add_action( 'bkap_add_global_settings_tab', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
@@ -47,7 +49,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * 
 		 * @since 1.0
 		 */
-		function send_to_friend_error_notice() {
+		function bkap_send_to_friend_error_notice() {
 		    if ( !is_plugin_active( 'woocommerce-booking/woocommerce-booking.php' ) ) {
 		        echo "<div class=\"error\"><p>Send to a Friend Addon is enabled but not effective. It requires WooCommerce Booking and Appointment plugin in order to work.</p></div>";
 		    }
@@ -68,6 +70,314 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		}
 		
 		/**
+		 * Wordpress Settings API
+		 * 
+		 * The below function uses the Wordpress Settings API
+		 * to register all the setting fields and their callback 
+		 * functions
+		 * 
+		 * @since 1.0
+		 */
+		function bkap_friend_plugin_options() {
+			// First, we register a section. This is necessary since all future options must belong to a section
+			add_settings_section(
+					'bkap_friend_settings_section',         // ID used to identify this section and with which to register options
+					__('Send to a Friend Addon Settings', 'woocommerce-booking'),                  // Title to be displayed on the administration page
+					array($this, 'bkap_friend_callback' ), // Callback used to render the description of the section
+					'woocommerce_booking_page'     // Page on which to add this section of options
+			);
+				
+			add_settings_field(
+					'bkap_friend_enable_send_a_friend',
+					__('Enable a user to send booking details to a friend:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_enable_friend_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Yes, show the \'Book Another\' and \'Send a Friend\' buttons on the Thank You page and Order emails.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_enable_admin_cc',
+					__('Mark the admin in cc in emails sent to friends:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_enable_admin_cc_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_book_another_button_text',
+					__('Text for the Book Another Space button:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_book_another_button_text_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Text for the Book Another Space button on the Thank You page and Order emails.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_send_friend_button_text',
+					__('Text for the Send to a Friend button:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_send_friend_button_text_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Text for the Send to a Friend button on the Thank You page and Order emails.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_email_button_text',
+					__('Text for the button in emails sent to friends:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_email_button_text_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Text for the Book men in button which appears in emails sent to friends.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_availability_msg_single_days',
+					__('Message for availability left for single day bookings:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_avail_msg_single_days_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Availability Message to be displayed in emails for products with single day bookings.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_availability_msg_date_time',
+					__('Message for availability left for date and time slot bookings:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_avail_msg_date_time_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Availability Message to be displayed in emails for products with date and time bookings.', 'woocommerce-booking') )
+			);
+				
+			add_settings_field(
+					'bkap_friend_availability_msg_multiple_days',
+					__('Message for availability left for multiple day bookings:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_avail_msg_multiple_days_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('Availability Message to be displayed in emails for products with multiple day bookings.', 'woocommerce-booking') )
+			);
+				
+			// Finally, we register the fields with WordPress
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_enable_send_a_friend'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_enable_admin_cc'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_book_another_button_text'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_send_friend_button_text'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_email_button_text'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_availability_msg_single_days'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_availability_msg_date_time'
+			);
+				
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_availability_msg_multiple_days'
+			);
+		}
+		
+		/**
+		 * WP Settings API callback for section
+		 * 
+		 * @since 1.0
+		 */
+		function bkap_friend_callback() {
+		
+		}
+		
+		/**
+		 * WP Settings API callback for enable send a friend
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_enable_friend_callback( $args ) {
+			// First, we read the option
+			$enable_send_a_friend = get_option( 'bkap_friend_enable_send_a_friend' );
+			// This condition added to avoid the notice displyed while Check box is unchecked.
+			if( isset( $enable_send_a_friend ) &&  $enable_send_a_friend == '' ) {
+				$enable_send_a_friend = 'off';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="checkbox" id="bkap_friend_enable_send_a_friend" name="bkap_friend_enable_send_a_friend" value="on" ' . checked( 'on', $enable_send_a_friend, false ) . '/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the checkbox
+			$html .= '<label for="bkap_friend_enable_send_a_friend"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for enable admin in cc 
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_enable_admin_cc_callback( $args ) {
+			// First, we read the option
+			$enable_admin_cc = get_option( 'bkap_friend_enable_admin_cc' );
+			// This condition added to avoid the notice displyed while Check box is unchecked.
+			if( isset( $enable_admin_cc ) &&  $enable_admin_cc == '' ) {
+				$enable_admin_cc = 'off';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="checkbox" id="bkap_friend_enable_admin_cc" name="bkap_friend_enable_admin_cc" value="on" ' . checked( 'on', $enable_admin_cc, false ) . '/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the checkbox
+			$html .= '<label for="bkap_friend_enable_admin_cc"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for Book Another space button text 
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_book_another_button_text_callback( $args ) {
+			// First, we read the option
+			$book_another_space_button = get_option( 'bkap_friend_book_another_button_text' );
+			// This condition added to avoid the notice displyed when no text is set.
+			if( isset( $book_another_space_button ) &&  $book_another_space_button == '' ) {
+				$book_another_space_button = 'BOOK ANOTHER SPACE';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_book_another_button_text" name="bkap_friend_book_another_button_text" value="' . $book_another_space_button . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_book_another_button_text"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for Send to a Friend button text 
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_send_friend_button_text_callback( $args ) {
+			// First, we read the option
+			$send_friend_button = get_option( 'bkap_friend_send_friend_button_text' );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $send_friend_button ) &&  $send_friend_button == '' ) {
+				$send_friend_button = 'SEND TO A FRIEND';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_send_friend_button_text" name="bkap_friend_send_friend_button_text" value="' . $send_friend_button . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_send_friend_button_text"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for button in emails sent to friends.
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_email_button_text_callback( $args ) {
+			// First, we read the option
+			$email_button_text = get_option( 'bkap_friend_email_button_text' );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $email_button_text ) &&  $email_button_text == '' ) {
+				$email_button_text = 'Book me in !!';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_email_button_text" name="bkap_friend_email_button_text" value="' . $email_button_text . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_email_button_text"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for availability message for single day bookings 
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_avail_msg_single_days_callback( $args ) {
+			// First, we read the option
+			$available_msg_single_days = get_option( 'bkap_friend_availability_msg_single_days' );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $available_msg_single_days ) &&  $available_msg_single_days == '' ) {
+				$available_msg_single_days = 'We still have <available_spots> spaces left for this date.';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_availability_msg_single_days" name="bkap_friend_availability_msg_single_days" value="' . $available_msg_single_days . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_availability_msg_single_days"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for availability message for date and time bookings
+		 *
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_avail_msg_date_time_callback( $args ) {
+			// First, we read the option
+			$available_msg_date_time = get_option( 'bkap_friend_availability_msg_date_time' );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $available_msg_date_time ) &&  $available_msg_date_time == '' ) {
+				$available_msg_date_time = 'We still have <available_spots> spaces left for this date and time slot.';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_availability_msg_date_time" name="bkap_friend_availability_msg_date_time" value="' . $available_msg_date_time . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_availability_msg_date_time"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
+		/**
+		 * WP Settings API callback for availability message for multiple day bookings
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_avail_msg_multiple_days_callback( $args ) {
+			// First, we read the option
+			$available_msg_multiple_days = get_option( 'bkap_friend_availability_msg_multiple_days' );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $available_msg_multiple_days ) &&  $available_msg_multiple_days == '' ) {
+				$available_msg_multiple_days = 'We still have <available_spots> spaces left for this date range.';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<input type="text" id="bkap_friend_availability_msg_multiple_days" name="bkap_friend_availability_msg_multiple_days" value="' . $available_msg_multiple_days . '"/>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_availability_msg_multiple_days"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		/**
 		 * Add a new tab in Booking->Settings menu
 		 *
 		 * This function adds a new tab Send a Friend Addon Settings tab
@@ -81,91 +391,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$action = $_GET['action'];
 			} else {
 				$action = '';
-			}
-			if ( $action == 'send_friend' ) {
-				$active_friend_settings = "nav-tab-active";
-			} else {
-				$active_friend_settings = '';
-			}
-			?>
-			<a href="admin.php?page=woocommerce_booking_page&action=send_friend" class="nav-tab <?php echo $active_friend_settings; ?>"> <?php _e( 'Send to a Friend Addon Settings', 'woocommerce-booking' );?> </a>
-			<?php 
-			if ( $action == 'send_friend' ) {
-				// Save the field values
-				if ( isset( $_POST['wapbk_send_friend_settings_frm'] ) && $_POST['wapbk_send_friend_settings_frm'] == 'save' ) {
-					$booking_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
-					if ( !isset( $booking_settings ) || $booking_settings == '' ) {
-						$booking_settings = new stdClass();
-					}
-					$booking_settings->enable_send_a_friend = $booking_settings->enable_admin_cc = '';
-					if ( isset( $_POST['enable_send_a_friend'] ) ) {
-						$booking_settings->enable_send_a_friend = $_POST['enable_send_a_friend'];
-					}
-					if ( isset( $_POST['enable_admin_cc'] ) ) {
-						$booking_settings->enable_admin_cc = $_POST['enable_admin_cc'];
-					}
-					$woocommerce_booking_settings = json_encode($booking_settings);
-					update_option( 'woocommerce_booking_global_settings', $woocommerce_booking_settings );
-				}
-				if ( isset( $_POST['wapbk_send_friend_settings_frm'] ) && $_POST['wapbk_send_friend_settings_frm'] == 'save' ) {
-					?>
-					<div id="message" class="updated fade"><p><strong><?php _e( 'Your settings have been saved.', 'woocommerce-booking' ); ?></strong></p></div>
-					<?php 
-				}
-				$saved_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
+			} 
+			if ( $action == 'addon_settings' ) {
 				?>
 				<div id="content">
-			      	<form method="post" action="" id="booking_settings">
-			           	<input type="hidden" name="wapbk_send_friend_settings_frm" value="save">
-			            <div id="poststuff">
-			    	    	<div class="postbox">
-			                	<h3 class="hndle"><?php _e( 'Send to a Friend Addon Settings', 'woocommerce-booking' ); ?></h3>
-			                    <div>
-			                     	<table class="form-table" style="max-width:450px; width:100%;">
-			        	            	<tr>
-			                             	<td>
-			                                  	<label for="enable_send_a_friend"><b><?php _e( 'Enable a user to send booking details to a Friend:', 'woocommerce-booking' ); ?></b></label>
-			                                </td>
-			                                <td>
-			                                  	<?php 
-			                                   	$send_a_friend = '';
-			                                   	if ( isset( $saved_settings->enable_send_a_friend ) && $saved_settings->enable_send_a_friend == 'on') {
-			                                   		$send_a_friend = 'checked';
-			                                   	}
-			                                   	?>
-			                                   	<input type="checkbox" id="enable_send_a_friend" name="enable_send_a_friend" <?php echo $send_a_friend; ?>/>
-			                                    <img class="help_tip" width="16" height="16" data-tip="<?php _e( 'Shows the \'Book Another\' and \'Send a Friend\' buttons on the Order Received page and Order emails. On clicking the buttons, users will be taken to the respective pages.', 'woocommerce-booking' ); ?>" src="<?php echo plugins_url() ;?>/woocommerce/assets/images/help.png" />
-			                                </td>
-			                          	</tr>
-			                            <tr>
-			                            	<td>
-			                                   	<label for="enable_admin_cc"><b><?php _e( 'Mark the admin in cc in emails sent to friends:', 'woocommerce-booking' ); ?></b></label>
-			                               	</td>
-			                                <td>
-			                                 	<?php 
-			                                  	$enable_admin_cc = '';
-			                                  	if ( isset( $saved_settings->enable_admin_cc ) && $saved_settings->enable_admin_cc == 'on') {
-			                                  		$enable_admin_cc = 'checked';
-			                                 	}
-			                                  	?>
-			                                  	<input type="checkbox" id="enable_admin_cc" name="enable_admin_cc" <?php echo $enable_admin_cc; ?>/>
-			                                    <img class="help_tip" width="16" height="16" data-tip="<?php _e( 'Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'woocommerce-booking' ); ?>" src="<?php echo plugins_url() ;?>/woocommerce/assets/images/help.png" />
-			                               	</td>
-			                          	</tr>
-			                      	</table>
-								</div>
-			        	       	<table class="form-table">
-			                    	<?php do_action( 'bkap_send_a_friend_settings' );?>
-			                        <tr>
-			                        	<td>
-			                       			<input type="submit" name="Submit" class="button-primary" value="<?php _e( 'Save Changes', 'woocommerce-booking' ); ?>" />
-			                	  	    </td>
-			            	        </tr>
-			        	        </table>
-			              	</div>
-			            </div>
-			     	</form>
-				</div>
+					<form method="post" action="options.php">
+					    <?php settings_fields( 'bkap_friend_settings' ); ?>
+				        <?php do_settings_sections( 'woocommerce_booking_page' ); ?>
+						<?php settings_errors(); ?>
+						<?php submit_button(); ?>
+			        </form>
+			    </div>
 				<?php 
 			}
 		}
@@ -183,8 +419,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$product_id = $item['product_id'];
 			// Booking Settings
 			$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
-			$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
-			if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' && isset( $global_settings->enable_send_a_friend ) && $global_settings->enable_send_a_friend == 'on' ) {
+			// get the addon settings
+			$enable_send_a_friend = get_option( 'bkap_friend_enable_send_a_friend' );
+			if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' && isset( $enable_send_a_friend ) && $enable_send_a_friend == 'on' ) {
 				// Get the booking details
 				$booking_date = $item['wapbk_booking_date'];
 				$checkout_date = $booking_time = '';
@@ -205,27 +442,24 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$display = 'YES';
 				}
 				
-				$message = wapbk_send_friend( 'book.availability-order-received1' ) . $availability . wapbk_send_friend( 'book.availability-order-received2' );
 				if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
-					$message .= wapbk_send_friend( 'book.availability-multiple-order-received' );
+					$message = get_option( 'bkap_friend_availability_msg_multiple_days' );
 				}
 				else if( $booking_settings['booking_enable_time'] == 'on' ) {
-					$message .= wapbk_send_friend( 'book.availability-time-order-received' );
+					$message = get_option( 'bkap_friend_availability_msg_date_time' );
 				}
 				else {
-					$message .= wapbk_send_friend( 'book.availability-single-order-received' );
+					$message = get_option( 'bkap_friend_availability_msg_single_days' );
 				}
-				if ($display == "YES") {
-					?>
-					<br><br>
-					<?php 
+				$message = str_replace( '<available_spots>', $availability, $message );
+				if ($display == "YES") { 
 					echo __( $message );
 					$parm = array( 'send-booking-to-friend' => 1,
 							'order_id' => $order->id );
 					?> 
 					<br>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( 'BOOK ANOTHER SPACE', 'woocommerce-booking' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -380,8 +614,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					die;
 				}
 			}
-			// get the global booking settings
-			$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
+			// get the addon settings
+			$enable_admin_cc = get_option( 'bkap_friend_enable_admin_cc' );
 			// get the order object
 			$order = new WC_Order( $_POST['order_id'] );
 			$items = $order->get_items();
@@ -447,19 +681,19 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						// check the booking type
 						$booking_settings = get_post_meta( $value['product_id'], 'woocommerce_booking_settings', true);
 							
-						$message = wapbk_send_friend( 'book.availability-order-received1' ) . $availability . wapbk_send_friend( 'book.availability-order-received2' );
 						if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
-							$message .= wapbk_send_friend( 'book.availability-multiple-order-received' );
+							$message = get_option( 'bkap_friend_availability_msg_multiple_days' );
 						}
 						else if( $booking_settings['booking_enable_time'] == 'on' ) {
-							$message .= wapbk_send_friend( 'book.availability-time-order-received' );
+							$message = get_option( 'bkap_friend_availability_msg_date_time' );
 						}
 						else {
-							$message .= wapbk_send_friend( 'book.availability-single-order-received' );
+							$message = get_option( 'bkap_friend_availability_msg_single_days' );
 						}
+						$message = str_replace( '<available_spots>', $availability, $message );
 						// Display availability message and the button to allow the user to directly book an order.
 						$product_table .= "<td>" . $message . "<br>";
-						$product_table .= "<a href='" . $button_link . "' style='display: block;background: #f4f5f4;width: 110px;height: 15px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;'>Book me in!</a></td></tr>";
+						$product_table .= "<a href='" . $button_link . "' style='display: block;background: #f4f5f4;width: 110px;height: 15px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;'>" . get_option( 'bkap_friend_email_button_text' ) . "</a></td></tr>";
 					}					
 				}
 			} 
@@ -472,7 +706,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$recipients = $_POST['friend_email'];
 				// Create the header, mark admin and client in cc
 				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
-				if ( isset( $global_settings->enable_admin_cc ) && $global_settings->enable_admin_cc == 'on' ) {
+				if ( isset( $enable_admin_cc ) && $enable_admin_cc == 'on' ) {
 					$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
 				} else {
 					$headers .= "Cc: " . $_POST['client_email'] . "\r\n";
