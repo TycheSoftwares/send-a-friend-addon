@@ -20,6 +20,24 @@ function is_bkap_send_friend_active() {
 		return false;
 	}
 }
+
+register_uninstall_hook( __FILE__, 'bkap_send_friend_delete');
+
+/**
+ * Delete the addon settings when the addon is uninstalled
+ * 
+ * @since 1.0
+ */
+function bkap_send_friend_delete() {
+	delete_option( 'bkap_friend_enable_send_a_friend' );
+	delete_option( 'bkap_friend_enable_admin_cc' );
+	delete_option( 'bkap_friend_book_another_button_text' );
+	delete_option( 'bkap_friend_send_friend_button_text' );
+	delete_option( 'bkap_friend_email_button_text' );
+	delete_option( 'bkap_friend_availability_msg_single_days' );
+	delete_option( 'bkap_friend_availability_msg_date_time' );
+	delete_option( 'bkap_friend_availability_msg_multiple_days' );
+}
 /**
  * send_to_friend class
  **/
