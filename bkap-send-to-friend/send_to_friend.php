@@ -906,6 +906,20 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$time_explode = explode( '-', $booking_time );
 							$book_date = $booking_date . ' ' . $time_explode[0];
 							$date_timestamp = strtotime( $book_date );
+							// set the format in which the time is to be displayed
+							$time_format = '12';
+							if ( isset( $global_settings ) ) {
+								$time_format = $global_settings->booking_time_format;
+							}
+							$display_time = $booking_time;
+							if ( $time_format == '12' ) {
+								$to_time = '';
+								$from_time = date('h:i A', strtotime($time_explode[0]));
+								if ( isset( $time_explode[1] ) ) {
+									$to_time = date('h:i A', strtotime($time_explode[1]));
+								}
+								$display_time = $from_time . ' - ' . $to_time;
+							}
 						}
 					}
 					// check if bookings are still available for the given date/s and/or time
@@ -986,11 +1000,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 									?>
 										// Pre-populate the time slots with the order time slots
 										jQuery( "#time_slot" ).val( '' );
-										jQuery( "#show_stock_status" ).html( "The time slot <?php echo $booking_time; ?> is a past time slot. Please select another slot." );
+										jQuery( "#show_stock_status" ).html( "The time slot <?php echo $display_time; ?> is a past time slot. Please select another slot." );
 									<?php 
 									} else {?>
 										// Pre-populate the time slots with the order time slots
-										jQuery( "#time_slot" ).val( '<?php echo $booking_time; ?>' );
+										jQuery( "#time_slot" ).val( '<?php echo $display_time; ?>' );
 										var time_slot_value = jQuery( "#time_slot" ).val();
 										// Availability display for the time slot selected if setting is enabled			
 										if ( typeof time_slot_value != "undefined" && jQuery( "#wapbk_availability_display" ).val() == "yes" ) {
