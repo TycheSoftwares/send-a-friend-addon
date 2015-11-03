@@ -13,6 +13,13 @@ Author URI: http://www.tychesoftwares.com/
 load_plugin_textdomain('woocommerce-booking', false, dirname( plugin_basename( __FILE__ ) ) . '/');
 include_once( ABSPATH . 'wp-content/plugins/bkap-send-to-friend/bkap_tell_a_friend_page.php' );
 
+function is_bkap_send_friend_active() {
+	if ( is_plugin_active( 'bkap-send-to-friend/send_to_friend.php' ) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
 /**
  * send_to_friend class
  **/
@@ -28,7 +35,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    // Add settings link on the Plugins page
 		    add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'bkap_plugin_settings_link' ) );
 		    // Add the new settings tab for the addon
-		    add_action( 'bkap_add_global_settings_tab', array( &$this, 'bkap_send_friend_tab' ), 10 );
+		    add_action( 'bkap_add_addon_settings', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
 			
