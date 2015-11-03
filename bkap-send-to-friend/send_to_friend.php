@@ -11,8 +11,7 @@ Author URI: http://www.tychesoftwares.com/
  * Localisation
  **/
 load_plugin_textdomain('woocommerce-booking', false, dirname( plugin_basename( __FILE__ ) ) . '/');
-include_once( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/lang.php' );
-include_once( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/bkap_tell_a_friend_page.php' );
+include_once( ABSPATH . 'wp-content/plugins/bkap-send-to-friend/bkap_tell_a_friend_page.php' );
 
 /**
  * send_to_friend class
@@ -591,8 +590,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				
 				ob_start();
 				$templatefilename = 'request-friend.php';
-				if ( file_exists( ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/' . $templatefilename ) ) {
-					$template = ABSPATH . 'wp-content/plugins/wapbk-send-to-friend/' . $templatefilename;
+				if ( file_exists( ABSPATH . 'wp-content/plugins/bkap-send-to-friend/' . $templatefilename ) ) {
+					$template = ABSPATH . 'wp-content/plugins/bkap-send-to-friend/' . $templatefilename;
 					include( $template );
 				}
 				$content = ob_get_contents();
