@@ -326,14 +326,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function bkap_friend_avail_msg_single_days_callback( $args ) {
 			// First, we read the option
-			$available_msg_single_days = get_option( 'bkap_friend_availability_msg_single_days' );
+			$available_msg_single_days = stripslashes( get_option( 'bkap_friend_availability_msg_single_days' ) );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $available_msg_single_days ) &&  $available_msg_single_days == '' ) {
 				$available_msg_single_days = 'We still have <available_spots> spaces left for this date.';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
-			$html = '<input type="text" id="bkap_friend_availability_msg_single_days" name="bkap_friend_availability_msg_single_days" value="' . $available_msg_single_days . '"/>';
+			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_single_days" name="bkap_friend_availability_msg_single_days" style="width:250px;">' . $available_msg_single_days . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_single_days"> '  . $args[0] . '</label>';
 			echo $html;
@@ -347,14 +347,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function bkap_friend_avail_msg_date_time_callback( $args ) {
 			// First, we read the option
-			$available_msg_date_time = get_option( 'bkap_friend_availability_msg_date_time' );
+			$available_msg_date_time = stripslashes( get_option( 'bkap_friend_availability_msg_date_time' ) );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $available_msg_date_time ) &&  $available_msg_date_time == '' ) {
 				$available_msg_date_time = 'We still have <available_spots> spaces left for this date and time slot.';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
-			$html = '<input type="text" id="bkap_friend_availability_msg_date_time" name="bkap_friend_availability_msg_date_time" value="' . $available_msg_date_time . '"/>';
+			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_date_time" name="bkap_friend_availability_msg_date_time" style="width:250px;">' . $available_msg_date_time . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_date_time"> '  . $args[0] . '</label>';
 			echo $html;
@@ -368,14 +368,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function bkap_friend_avail_msg_multiple_days_callback( $args ) {
 			// First, we read the option
-			$available_msg_multiple_days = get_option( 'bkap_friend_availability_msg_multiple_days' );
+			$available_msg_multiple_days = stripslashes( get_option( 'bkap_friend_availability_msg_multiple_days' ) );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $available_msg_multiple_days ) &&  $available_msg_multiple_days == '' ) {
 				$available_msg_multiple_days = 'We still have <available_spots> spaces left for this date range.';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
-			$html = '<input type="text" id="bkap_friend_availability_msg_multiple_days" name="bkap_friend_availability_msg_multiple_days" value="' . $available_msg_multiple_days . '"/>';
+			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_multiple_days" name="bkap_friend_availability_msg_multiple_days" style="width:250px;">' . $available_msg_multiple_days . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_multiple_days"> '  . $args[0] . '</label>';
 			echo $html;
