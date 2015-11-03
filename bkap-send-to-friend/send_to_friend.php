@@ -608,12 +608,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function load_tell_a_friend_page() {
 
-		//	if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 ) {
 			$url = '';
-			if ( isset( $_SERVER['PATH_INFO'] ) && $_SERVER['PATH_INFO'] != '' ) {
-				$url = $_SERVER['PATH_INFO'];
+			if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != '' ) {
+				$url = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
 			}
-				
 			if ( preg_match( '/send-booking-to-friend/', $url ) ) {
 				
 				ob_start();
