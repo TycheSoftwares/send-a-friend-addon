@@ -2,7 +2,7 @@
 /*
 Plugin Name: Send to a Friend Addon
 Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin
-Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products 
+Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products. To get started: Go to <strong>Dashboard -> <a href="admin.php?page=woocommerce_booking_page&action=addon_settings">Booking</a></strong>. 
 Version: 1.0
 Author: Tyche Softwares
 Author URI: http://www.tychesoftwares.com/
@@ -25,6 +25,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    add_action( 'admin_notices', array( &$this, 'bkap_send_to_friend_error_notice' ) );
 		    // Wordpress settings API
 		    add_action('admin_init', array( &$this, 'bkap_friend_plugin_options' ) );
+		    // Add settings link on the Plugins page
+		    add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'bkap_plugin_settings_link' ) );
 		    // Add the new settings tab for the addon
 		    add_action( 'bkap_add_global_settings_tab', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
@@ -69,6 +71,22 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			else {
 				add_action('wp_ajax_bkap_send_email_to_friend', array(&$this, 'bkap_send_email_to_friend'));
 			}
+		}
+		
+		/**
+		 * Add a settings link on the Plugins page
+		 *
+		 * The below code adds a Settings link on the Wordpress Dashboard->Plugins page
+		 * which redirects the user to the addon settings.
+		 *
+		 * @param array $links
+		 * @since 1.0
+		 * @return array
+		 */
+		function bkap_plugin_settings_link( $links ) {
+			$setting_link['settings'] = '<a href="'. esc_url( get_admin_url( null, 'admin.php?page=woocommerce_booking_page&action=addon_settings') ) .'">Settings</a>';
+			$links = $setting_link + $links;
+			return $links;
 		}
 		
 		/**
