@@ -38,10 +38,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    add_action( 'bkap_add_addon_settings', array( &$this, 'bkap_send_friend_tab' ), 10 );
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
-			
 			// redirect to the 'tell a friend' page
 			add_action( 'init', array( &$this, 'load_tell_a_friend_page' ) );
-			
 			// Ajax calls
 			add_action( 'init', array( &$this, 'bkap_send_friend_load_ajax' ) );
 			// pre-populate date and time slots on the front end product page
@@ -481,12 +479,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$message = str_replace( '<available_spots>', $availability, $message );
 				if ($display == "YES") { 
 					echo __( $message );
-					$parm = array( 'send-booking-to-friend' => 1,
-							'order_id' => $order->id );
+					$url = home_url( '/' ) . 'send-booking-to-friend/';
 					?> 
 					<br>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -611,7 +608,13 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function load_tell_a_friend_page() {
 
-			if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 ) {
+		//	if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 ) {
+			$url = '';
+			if ( isset( $_SERVER['PATH_INFO'] ) && $_SERVER['PATH_INFO'] != '' ) {
+				$url = $_SERVER['PATH_INFO'];
+			}
+				
+			if ( preg_match( '/send-booking-to-friend/', $url ) ) {
 				
 				ob_start();
 				$templatefilename = 'request-friend.php';
@@ -622,7 +625,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$content = ob_get_contents();
 				ob_end_clean();
 				
-				$args = array( 'slug'    => '',
+				$args = array( 'slug'    => 'send-booking-to-friend',
 							   'title'   => 'Tell a friend',
 							   'content' => $content );
 				$pg = new bkap_tell_a_friend_page( $args );
@@ -640,12 +643,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			// check if the email address field is populated for the friends
 			if( isset( $_POST['friend_email'] ) ) {
 				if ( trim( $_POST['friend_email'] ) == '' ) {
+					$url = home_url( '/' ) . 'send-booking-to-friend/';
 					$message = 'Please enter the email address of atleast one friend.';
 					wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
-					$parm = array( 'send-booking-to-friend' => 1,
-							'order_id' => $_POST['order_id'] );
-			
-					echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) ) );
+					echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
 					die;
 				}
 			}
@@ -760,9 +761,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$message = 'Email could not be sent as all the items have been fully booked.';
 				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
 			}
-			$parm = array( 'send-booking-to-friend' => 1,
-					'order_id' => $_POST['order_id'] );
-			echo( esc_url_raw( add_query_arg( $parm, get_permalink( woocommerce_get_page_id( 'cart' ) ) ) ) );
+			$url = home_url( '/' ) . 'send-booking-to-friend/';
+			echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
 			die();
 		}
 		

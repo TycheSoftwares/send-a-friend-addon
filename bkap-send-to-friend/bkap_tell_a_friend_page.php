@@ -33,9 +33,9 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 		{
 			global $wp, $wp_query;
 
-			/*if (count($posts) == 0 &&
-				(strcasecmp($wp->request, $this->slug) == 0 || $wp->query_vars['page_id'] == $this->slug ) ) */
-			if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 )
+			if (count($posts) == 0 &&
+				(strcasecmp($wp->request, $this->slug) == 0 || $wp->query_vars['page_id'] == $this->slug ) ) 
+		//	if ( isset( $_GET['send-booking-to-friend'] ) && $_GET['send-booking-to-friend'] == 1 )
 			{
 				
 				//create a fake post intance
