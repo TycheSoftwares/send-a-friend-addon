@@ -225,6 +225,15 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					array( __('Availability Message to be displayed in emails for products with multiple day bookings.', 'woocommerce-booking') )
 			);
 				
+			add_settings_field(
+					'bkap_friend_button_css',
+					__('Enter the css to be applied to the buttons displayed on the Thank You page and Order emails:', 'woocommerce-booking'),
+					array($this, 'bkap_friend_button_css_callback' ),
+					'woocommerce_booking_page',
+					'bkap_friend_settings_section',
+					array( __('The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'woocommerce-booking') )
+			);
+			
 			// Finally, we register the fields with WordPress
 			register_setting(
 					'bkap_friend_settings',
@@ -264,6 +273,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			register_setting(
 					'bkap_friend_settings',
 					'bkap_friend_availability_msg_multiple_days'
+			);
+			
+			register_setting(
+					'bkap_friend_settings',
+					'bkap_friend_button_css'
 			);
 		}
 		
@@ -443,6 +457,28 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html .= '<label for="bkap_friend_availability_msg_multiple_days"> '  . $args[0] . '</label>';
 			echo $html;
 		}
+		
+		/**
+		 * WP Settings API callback for button css
+		 * 
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_button_css_callback( $args ) {
+			// First, we read the option
+			$button_css = stripslashes( get_option( 'bkap_friend_button_css' ) );
+			// This condition added to avoid the notice displyed when no text is set
+			if( isset( $button_css ) &&  $button_css == '' ) {
+				$button_css = 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;';
+			}
+			// Next, we update the name attribute to access this element's ID in the context of the display options array
+			// We also access the show_header element of the options collection in the call to the checked() helper function
+			$html = '<textarea rows="4" cols="60" id="bkap_friend_button_css" name="bkap_friend_button_css" style="width:600px;">' . $button_css . '</textarea>';
+			// Here, we'll take the first argument of the array and add it to a label next to the field
+			$html .= '<label for="bkap_friend_button_css"> '  . $args[0] . '</label>';
+			echo $html;
+		}
+		
 		/**
 		 * Add a new tab in Booking->Settings menu
 		 *
@@ -523,8 +559,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$url = home_url( '/' ) . 'send-booking-to-friend/';
 					?> 
 					<br>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -768,7 +804,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$message = str_replace( '<available_spots>', $availability, $message );
 						// Display availability message and the button to allow the user to directly book an order.
 						$product_table .= "<td>" . $message . "<br>";
-						$product_table .= "<a href='" . $button_link . "' style='display: block;background: #f4f5f4;width: 110px;height: 15px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;'>" . get_option( 'bkap_friend_email_button_text' ) . "</a></td></tr>";
+						$product_table .= "<a href='" . $button_link . "' style='".get_option( 'bkap_friend_button_css' ) ."'>" . get_option( 'bkap_friend_email_button_text' ) . "</a></td></tr>";
 					}					
 				}
 			} 
