@@ -936,7 +936,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$date_format_set = $date_formats[$global_settings->booking_date_format];
 						$display_date = date ( $date_format_set, strtotime( $booking_date ) );
 					}
-					$checkout_date = $booking_time = '';
+					$checkout_date = $booking_time = $display_time = '';
 					$hidden_date_checkout = '';
 					// if multiple days is enabled, fetch the checkout date
 					if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
