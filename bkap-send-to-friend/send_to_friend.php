@@ -439,9 +439,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				?>
 				<div id="content">
 					<form method="post" action="options.php">
+						<?php settings_errors(); ?>
 					    <?php settings_fields( 'bkap_friend_settings' ); ?>
 				        <?php do_settings_sections( 'woocommerce_booking_page' ); ?>
-						<?php settings_errors(); ?>
 						<?php submit_button(); ?>
 			        </form>
 			    </div>
