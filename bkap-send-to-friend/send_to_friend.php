@@ -555,6 +555,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				}
 				$message = str_replace( '<available_spots>', $availability, $message );
 				if ($display == "YES") { 
+					?>
+					<br>
+					<?php
 					echo __( $message );
 					$url = home_url( '/' ) . 'send-booking-to-friend/';
 					?> 
