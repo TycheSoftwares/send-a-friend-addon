@@ -37,6 +37,7 @@ function bkap_send_friend_delete() {
 	delete_option( 'bkap_friend_availability_msg_single_days' );
 	delete_option( 'bkap_friend_availability_msg_date_time' );
 	delete_option( 'bkap_friend_availability_msg_multiple_days' );
+	delete_option( 'bkap_friend_button_css' );
 }
 /**
  * send_to_friend class
@@ -48,6 +49,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		public function __construct() {
 			// Display a notice in the admin, when the addon is enabled without the base plugin
 		    add_action( 'admin_notices', array( &$this, 'bkap_send_to_friend_error_notice' ) );
+		    // Initialize settings
+		    register_activation_hook( __FILE__, array( &$this, 'bkap_send_to_friend_activate' ) );
 		    // Wordpress settings API
 		    add_action('admin_init', array( &$this, 'bkap_friend_plugin_options' ) );
 		    // Add settings link on the Plugins page
@@ -112,6 +115,26 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			return $links;
 		}
 		
+		/**
+		 * Add settings when the plugin is activated
+		 *
+		 * @since 1.0
+		 */
+		function bkap_send_to_friend_activate() {
+			//Set default settings
+			add_option( 'bkap_friend_enable_send_a_friend', '' );
+			add_option( 'bkap_friend_enable_admin_cc', '' );
+				
+			add_option( 'bkap_friend_book_another_button_text', 'BOOK ANOTHER SPACE' );
+			add_option( 'bkap_friend_send_friend_button_text', 'SEND TO A FRIEND' );
+			add_option( 'bkap_friend_email_button_text', 'Book me in !!');
+				
+			add_option( 'bkap_friend_availability_msg_single_days', 'We still have <available_spots> spaces left for this date.' );
+			add_option( 'bkap_friend_availability_msg_date_time', 'We still have <available_spots> spaces left for this date and time slot.' );
+			add_option( 'bkap_friend_availability_msg_multiple_days', 'We still have <available_spots> spaces left for this date range.' );
+			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
+				
+		}
 		/**
 		 * Wordpress Settings API
 		 * 
