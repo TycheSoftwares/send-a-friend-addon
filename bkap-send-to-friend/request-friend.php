@@ -147,7 +147,7 @@ wc_print_notices();
 		Thank you for sharing with a friend. 
 	</p>
 	<p>
-		They have been notified via email and you have been copied in.
+		They have been notified via email.
 	</p>
 	<br>
 	<?php 

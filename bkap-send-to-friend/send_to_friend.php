@@ -759,9 +759,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				// Create the header, mark admin and client in cc
 				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
 				if ( isset( $enable_admin_cc ) && $enable_admin_cc == 'on' ) {
-					$headers .= "Cc: " . get_option( 'admin_email' ) . "," . $_POST['client_email'] . "\r\n";
-				} else {
-					$headers .= "Cc: " . $_POST['client_email'] . "\r\n";
+					$headers .= "Cc: " . get_option( 'admin_email' ) . "\r\n";
 				}
 				$headers .= "Bcc: " . $recipients . "\r\n";
 				$headers .= "Content-Type: text/html"."\r\n";
