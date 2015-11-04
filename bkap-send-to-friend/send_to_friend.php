@@ -172,7 +172,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					array($this, 'bkap_friend_email_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Book men in button which appears in emails sent to friends.', 'woocommerce-booking') )
+					array( __('Text for the Book me in button which appears in emails sent to friends.', 'woocommerce-booking') )
 			);
 				
 			add_settings_field(
