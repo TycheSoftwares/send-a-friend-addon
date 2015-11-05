@@ -745,7 +745,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			// get the booking date and time labels, so they can be used to retrieve data
 			$booking_date_label = get_option( 'book.date-label' );
 			$booking_time_label = get_option( 'book.time-label' );
-			$checkout_date_label = trim( get_option( 'checkout.date-label' ) );
+			$checkout_date_label = trim( strip_tags( get_option( 'checkout.date-label' ) ) );
 			// Product table
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
 								<tr style='background-color:#f4f5f4;'>
