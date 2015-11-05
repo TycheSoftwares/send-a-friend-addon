@@ -972,11 +972,18 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								$time_format = $global_settings->booking_time_format;
 							}
 							$display_time = $booking_time;
+							$to_time = '';
 							if ( $time_format == '12' ) {
-								$to_time = '';
+								
 								$from_time = date('h:i A', strtotime($time_explode[0]));
 								if ( isset( $time_explode[1] ) ) {
 									$to_time = date('h:i A', strtotime($time_explode[1]));
+								}
+								$display_time = $from_time . ' - ' . $to_time;
+							} else {
+								$from_time = date('H:i', strtotime($time_explode[0]));
+								if ( isset( $time_explode[1] ) ) {
+									$to_time = date('H:i', strtotime($time_explode[1]));
 								}
 								$display_time = $from_time . ' - ' . $to_time;
 							}
