@@ -815,7 +815,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			if ( $item_count > 0 ) {
 				$email_content = str_replace( '<product_list>', $product_table, $email_content );
 				// Personalized msg
-				$email_content = str_replace( '<personalized_message>', $_POST['msg_txt'], $email_content );
+				$per_msg = stripslashes( $_POST['msg_txt'] );
+				$email_content = str_replace( '<personalized_message>', $per_msg, $email_content );
 				// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
 				$recipients = $_POST['friend_email'];
 				// Create the header, mark admin and client in cc
