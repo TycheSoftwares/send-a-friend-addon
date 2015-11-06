@@ -898,6 +898,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$i++;
 						}
 					}
+					// call the below function to ensure that the qty and add to cart button are displayed on a variable product page
+					woocommerce_single_variation_add_to_cart_button();
 				} else {
 					$attribute_fields_str = ',tyche: 1';
 				}
@@ -1134,8 +1136,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 										jQuery( "#booking_calender_checkout" ).datepicker( "setDate", bookingDate );
 									<?php 
 									}?>
-									jQuery( ".single_add_to_cart_button" ).show();
-									jQuery( ".quantity" ).show();
 									bkap_single_day_price();
 									bkap_calculate_price();
 								} else {
