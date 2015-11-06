@@ -1107,6 +1107,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 										}
 										// This is called to ensure the variable pricing for time slots is displayed
 										bkap_single_day_price();
+										// This is called to create the change event for the time slot drop down
+										bkap_time_slot_events();
 									<?php 
 									}?>
 								});
