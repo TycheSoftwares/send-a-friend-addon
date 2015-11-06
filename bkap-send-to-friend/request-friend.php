@@ -78,9 +78,9 @@ wc_print_notices();
 			jQuery( "#selected_products" ).val( final_list );
 		}
 		if ( jQuery( "#selected_products" ).val() == '' ) {
-			jQuery( '#send_friend').prop( 'disabled', true );
+			jQuery( '#send_friend').prop( 'disabled', true ).css( 'cursor', 'default' );
 		} else {
-			jQuery( '#send_friend').prop( 'disabled', false );
+			jQuery( '#send_friend').prop( 'disabled', false ).css( 'cursor', 'pointer' );
 		}
 	}
 	</script>
