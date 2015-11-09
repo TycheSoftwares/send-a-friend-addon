@@ -151,7 +151,37 @@ wc_print_notices();
 	</p>
 	<br>
 	<?php 
-	$url = home_url( '/' ) . 'send-booking-to-friend/';
+	$url = '';
+	$permalink_structure = get_option( 'permalink_structure' );
+	$current_time = current_time( 'timestamp' );
+	$year = date( 'Y', $current_time );
+	$month = date( 'm', $current_time );
+	$day = date( 'd', $current_time );
+	$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+	switch ( $permalink_structure ) {
+	    case '/%year%/%monthnum%/%day%/%postname%/':
+	        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
+	        break;
+	    case '/%year%/%monthnum%/%postname%/':
+	        $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+	        break;
+	    case '/%postname%/':
+	        $url = home_url( '/' ) . $tell_friend_page_url .'/';
+	        break;
+	    default:
+	        $custom_link = trim( $permalink_structure );
+	        $last_char = substr( $custom_link, -1 );
+	        $url = home_url() . $permalink_structure;
+	
+	        if ( $last_char == '/' ) {
+	            $url .= $tell_friend_page_url . '/';
+	        } else {
+	            $url .= '/' . $tell_friend_page_url . '/';
+	        }
+	
+	        break;
+	
+	}
 	?>
 	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( 'order_id', $_GET['order_id'], $url ) ); ?>');" />
 	<br><br>

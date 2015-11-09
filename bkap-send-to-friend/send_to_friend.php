@@ -38,6 +38,7 @@ function bkap_send_friend_delete() {
 	delete_option( 'bkap_friend_availability_msg_date_time' );
 	delete_option( 'bkap_friend_availability_msg_multiple_days' );
 	delete_option( 'bkap_friend_button_css' );
+	delete_option( 'bkap_friend_tell_friend_page_url' );
 }
 /**
  * send_to_friend class
@@ -125,14 +126,15 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			add_option( 'bkap_friend_enable_send_a_friend', '' );
 			add_option( 'bkap_friend_enable_admin_cc', '' );
 				
-			add_option( 'bkap_friend_book_another_button_text', 'BOOK ANOTHER SPACE' );
-			add_option( 'bkap_friend_send_friend_button_text', 'SEND TO A FRIEND' );
+			add_option( 'bkap_friend_book_another_button_text', 'Book Another Space' );
+			add_option( 'bkap_friend_send_friend_button_text', 'Send To a Friend' );
 			add_option( 'bkap_friend_email_button_text', 'Book me in !!');
 				
 			add_option( 'bkap_friend_availability_msg_single_days', 'We still have <available_spots> spaces left for this date.' );
 			add_option( 'bkap_friend_availability_msg_date_time', 'We still have <available_spots> spaces left for this date and time slot.' );
 			add_option( 'bkap_friend_availability_msg_multiple_days', 'We still have <available_spots> spaces left for this date range.' );
 			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
+			add_option( 'bkap_friend_tell_friend_page_url', 'send-booking-to-friend' );
 				
 		}
 		/**
@@ -234,6 +236,15 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					array( __('The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'woocommerce-booking') )
 			);
 			
+			add_settings_field(
+			         'bkap_friend_tell_friend_page_url',
+			         __('Tell A Friend Address (URL):', 'woocommerce-booking'),
+			         array($this, 'bkap_friend_tell_friend_page_url_callback' ),
+			         'woocommerce_booking_page',
+			         'bkap_friend_settings_section',
+			         array( __('The URL that should be used for the Tell A Friend Page.', 'woocommerce-booking') )
+			);
+			
 			// Finally, we register the fields with WordPress
 			register_setting(
 					'bkap_friend_settings',
@@ -278,6 +289,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			register_setting(
 					'bkap_friend_settings',
 					'bkap_friend_button_css'
+			);
+			
+			register_setting(
+			         'bkap_friend_settings',
+			         'bkap_friend_tell_friend_page_url'
 			);
 		}
 		
@@ -343,7 +359,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$book_another_space_button = get_option( 'bkap_friend_book_another_button_text' );
 			// This condition added to avoid the notice displyed when no text is set.
 			if( isset( $book_another_space_button ) &&  $book_another_space_button == '' ) {
-				$book_another_space_button = 'BOOK ANOTHER SPACE';
+				$book_another_space_button = 'Book Another Space';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
@@ -364,7 +380,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$send_friend_button = get_option( 'bkap_friend_send_friend_button_text' );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $send_friend_button ) &&  $send_friend_button == '' ) {
-				$send_friend_button = 'SEND TO A FRIEND';
+				$send_friend_button = 'Send To a Friend';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
@@ -480,6 +496,26 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		}
 		
 		/**
+		 * WP Settings API callback for Tell a Friend page url
+		 *
+		 * @param array $args
+		 * @since 1.0
+		 */
+		function bkap_friend_tell_friend_page_url_callback( $args ) {
+		    // First, we read the option
+		    $tell_a_friend_page_url = stripslashes( get_option( 'bkap_friend_tell_friend_page_url' ) );
+		    // This condition added to avoid the notice displayed when no text is set
+		    if( isset( $tell_a_friend_page_url ) &&  $tell_a_friend_page_url == '' ) {
+		        $tell_a_friend_page_url = 'send-booking-to-friend';
+		    }
+		    // Next, we update the name attribute to access this element's ID in the context of the display options array
+		    // We also access the show_header element of the options collection in the call to the checked() helper function
+		    $html = '<input type="text" id="bkap_friend_tell_friend_page_url" name="bkap_friend_tell_friend_page_url" value="' . $tell_a_friend_page_url . '"/>';
+		    // Here, we'll take the first argument of the array and add it to a label next to the field
+		    $html .= '<label for="bkap_friend_tell_friend_page_url"> '  . $args[0] . '</label>';
+		    echo $html;
+		}
+		/**
 		 * Add a new tab in Booking->Settings menu
 		 *
 		 * This function adds a new tab Send a Friend Addon Settings tab
@@ -501,6 +537,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						<?php settings_errors(); ?>
 					    <?php settings_fields( 'bkap_friend_settings' ); ?>
 				        <?php do_settings_sections( 'woocommerce_booking_page' ); ?>
+				        <p>Please note that the Tell a Friend page is not compatible with the Default and Numeric permalink setting defined in Settings->Permalinks.</p> 
 						<?php submit_button(); ?>
 			        </form>
 			    </div>
@@ -559,7 +596,36 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					<br>
 					<?php
 					echo __( $message );
-					$url = home_url( '/' ) . 'send-booking-to-friend/';
+				    $url = '';
+					$permalink_structure = get_option( 'permalink_structure' );
+					$current_time = current_time( 'timestamp' );
+					$year = date( 'Y', $current_time );
+					$month = date( 'm', $current_time );
+					$day = date( 'd', $current_time );
+					$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+					switch ( $permalink_structure ) {
+					    case '/%year%/%monthnum%/%day%/%postname%/': 
+					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/'; 
+					        break;
+					    case '/%year%/%monthnum%/%postname%/':
+					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+					        break;
+					    case '/%postname%/':
+					        $url = home_url( '/' ) . $tell_friend_page_url .'/';
+					        break;
+					    default:
+					        $custom_link = trim( $permalink_structure );
+					        $last_char = substr( $custom_link, -1 );
+					        $url = home_url() . $permalink_structure;
+					      
+					        if ( $last_char == '/' ) {
+					            $url .= $tell_friend_page_url . '/';
+					        } else {
+					            $url .= '/' . $tell_friend_page_url . '/';
+					        }
+					      
+					        break;       
+					}
 					?> 
 					<br>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
@@ -718,10 +784,40 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */ 
 		function bkap_send_email_to_friend() {
+		    // create the tell a friend page url to return back once the email is sent
+		    $url = '';
+		    $permalink_structure = get_option( 'permalink_structure' );
+		    $current_time = current_time( 'timestamp' );
+		    $year = date( 'Y', $current_time );
+		    $month = date( 'm', $current_time );
+		    $day = date( 'd', $current_time );
+		    $tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+		    switch ( $permalink_structure ) {
+		        case '/%year%/%monthnum%/%day%/%postname%/':
+		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
+		            break;
+		        case '/%year%/%monthnum%/%postname%/':
+		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+		            break;
+		        case '/%postname%/':
+		            $url = home_url( '/' ) . $tell_friend_page_url .'/';
+		            break;
+		        default:
+		            $custom_link = trim( $permalink_structure );
+		            $last_char = substr( $custom_link, -1 );
+		            $url = home_url() . $permalink_structure;
+		             
+		            if ( $last_char == '/' ) {
+		                $url .= $tell_friend_page_url . '/';
+		            } else {
+		                $url .= '/' . $tell_friend_page_url . '/';
+		            }
+		             
+		            break;        
+		    }
 			// check if the email address field is populated for the friends
 			if( isset( $_POST['friend_email'] ) ) {
 				if ( trim( $_POST['friend_email'] ) == '' ) {
-					$url = home_url( '/' ) . 'send-booking-to-friend/';
 					$message = 'Please enter the email address of atleast one friend.';
 					wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
 					echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
@@ -838,7 +934,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$message = 'Email could not be sent as all the items have been fully booked.';
 				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
 			}
-			$url = home_url( '/' ) . 'send-booking-to-friend/';
 			echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
 			die();
 		}
