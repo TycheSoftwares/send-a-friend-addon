@@ -34,7 +34,12 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 			global $wp, $wp_query;
 
 			$url = '';
-			$page_url_setting = '/' . trim( get_option( 'bkap_friend_tell_friend_page_url' ) ) . '/';
+			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+			if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+			    $tell_friend_page_url = 'send-booking-to-friend';
+			}
+				
+			$page_url_setting = '/' . trim( $tell_friend_page_url ) . '/';
 			if ( preg_match( $page_url_setting, $wp->request ) ) {
 			    $url = 'send-booking-to-friend';
 			}

@@ -293,7 +293,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 			register_setting(
 			         'bkap_friend_settings',
-			         'bkap_friend_tell_friend_page_url'
+			         'bkap_friend_tell_friend_page_url',
+			         array( &$this, 'bkap_friend_tell_friend_page_url_save_callback' )
 			);
 		}
 		
@@ -515,6 +516,23 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    $html .= '<label for="bkap_friend_tell_friend_page_url"> '  . $args[0] . '</label>';
 		    echo $html;
 		}
+		
+		/**
+		 * WP Settings API validation callback for Tell a Friend page url
+		 * 
+		 * @param str $input
+		 * @since 1.0
+		 */
+		function bkap_friend_tell_friend_page_url_save_callback( $input ) {
+		    if (isset( $input ) && $input != '' ) {
+		        $new_input = $input;
+		    } else {
+		        $new_input = 'send-booking-to-friend';
+		        $message = __( 'The Tell A Friend Address (URL) has been set to the default value as it cannot be blank.', 'woocommerce-booking' );
+		        add_settings_error( 'bkap_friend_tell_friend_page_url', 'page_url_error', $message, 'updated' );
+		    }
+		    return $new_input;
+		}
 		/**
 		 * Add a new tab in Booking->Settings menu
 		 *
@@ -603,6 +621,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$month = date( 'm', $current_time );
 					$day = date( 'd', $current_time );
 					$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+					if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+					    $tell_friend_page_url = 'send-booking-to-friend';
+					}
 					switch ( $permalink_structure ) {
 					    case '/%year%/%monthnum%/%day%/%postname%/': 
 					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/'; 
@@ -758,7 +779,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != '' ) {
 				$url = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
 			}
-			$page_url_setting = '/' . trim( get_option( 'bkap_friend_tell_friend_page_url' ) ) . '/';
+			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+			if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+			    $tell_friend_page_url = 'send-booking-to-friend';
+			}
+			$page_url_setting = '/' . trim( $tell_friend_page_url ) . '/';
 			
 			if ( preg_match( $page_url_setting, $url ) ) {
 				
@@ -794,6 +819,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    $month = date( 'm', $current_time );
 		    $day = date( 'd', $current_time );
 		    $tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+		    if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+		        $tell_friend_page_url = 'send-booking-to-friend';
+		    }
 		    switch ( $permalink_structure ) {
 		        case '/%year%/%monthnum%/%day%/%postname%/':
 		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';

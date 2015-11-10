@@ -158,6 +158,9 @@ wc_print_notices();
 	$month = date( 'm', $current_time );
 	$day = date( 'd', $current_time );
 	$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
+	if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+	    $tell_friend_page_url = 'send-booking-to-friend';
+	}
 	switch ( $permalink_structure ) {
 	    case '/%year%/%monthnum%/%day%/%postname%/':
 	        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
