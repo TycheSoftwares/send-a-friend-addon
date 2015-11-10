@@ -127,7 +127,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			add_option( 'bkap_friend_enable_admin_cc', '' );
 				
 			add_option( 'bkap_friend_book_another_button_text', 'Book Another Space' );
-			add_option( 'bkap_friend_send_friend_button_text', 'Send To a Friend' );
+			add_option( 'bkap_friend_send_friend_button_text', 'Send to a Friend' );
 			add_option( 'bkap_friend_email_button_text', 'Book me in !!');
 				
 			add_option( 'bkap_friend_availability_msg_single_days', 'We still have <available_spots> spaces left for this date.' );
@@ -161,7 +161,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					array($this, 'bkap_friend_enable_friend_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Yes, show the \'Book Another\' and \'Send a Friend\' buttons on the Thank You page and Order emails.', 'woocommerce-booking') )
+					array( __('Yes, show the \'Book Another\' and \'Send to a Friend\' buttons on the Thank You page and Order emails.', 'woocommerce-booking') )
 			);
 				
 			add_settings_field(
@@ -380,7 +380,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$send_friend_button = get_option( 'bkap_friend_send_friend_button_text' );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $send_friend_button ) &&  $send_friend_button == '' ) {
-				$send_friend_button = 'Send To a Friend';
+				$send_friend_button = 'Send to a Friend';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
