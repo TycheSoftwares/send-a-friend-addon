@@ -34,7 +34,8 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 			global $wp, $wp_query;
 
 			$url = '';
-			if ( preg_match( '/send-booking-to-friend/', $wp->request ) ) {
+			$page_url_setting = '/' . trim( get_option( 'bkap_friend_tell_friend_page_url' ) ) . '/';
+			if ( preg_match( $page_url_setting, $wp->request ) ) {
 			    $url = 'send-booking-to-friend';
 			}
 			if( $url != '' && ( strcasecmp($url, $this->slug) == 0 || $wp->query_vars['page_id'] == $this->slug ) ) {

@@ -758,7 +758,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != '' ) {
 				$url = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
 			}
-			if ( preg_match( '/send-booking-to-friend/', $url ) ) {
+			$page_url_setting = '/' . trim( get_option( 'bkap_friend_tell_friend_page_url' ) ) . '/';
+			
+			if ( preg_match( $page_url_setting, $url ) ) {
 				
 				ob_start();
 				$templatefilename = 'request-friend.php';
