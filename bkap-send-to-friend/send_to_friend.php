@@ -242,7 +242,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			         array($this, 'bkap_friend_tell_friend_page_url_callback' ),
 			         'woocommerce_booking_page',
 			         'bkap_friend_settings_section',
-			         array( __('The URL that should be used for the Tell A Friend Page.', 'woocommerce-booking') )
+			         array( __('/?order_id={order_id} . The URL that should be used for the Tell A Friend Page.', 'woocommerce-booking') )
 			);
 			
 			// Finally, we register the fields with WordPress
