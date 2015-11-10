@@ -14,7 +14,7 @@ wc_print_notices();
 <br>
 <div id="tell_a_friend" style="display:<?php echo $show_tell_friend; ?>">
 	<p>
-		Enter the details of your friends below and we'll email them (copying you in) inviting them to join you on your volunteering days below.
+		Enter the details of your friends below and we'll email and invite them to join you on your booked days below.
 	</p>
 	<br>
 	<?php 
@@ -26,7 +26,7 @@ wc_print_notices();
 		$product_id = $value['product_id'];
 		// Booking Settings
 		$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
-		if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' ) {
+		if ( isset( $booking_settings['booking_enable_date'] ) && $booking_settings['booking_enable_date'] == 'on' ) {
 			// Add the product to the list of selected products as the checkoboxes are selected by default
 			$product_list .= $product_id . ',';
 			// Get the date and time slot label
