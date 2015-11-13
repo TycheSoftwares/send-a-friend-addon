@@ -1023,8 +1023,19 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$i++;
 						}
 					}
+					// check if the product is already present in the cart, load the add to cart and qty buttons only if it is not present in the cart 
+					$present_in_cart = 'NO';
+					foreach( WC()->cart->get_cart() as $cart_item_key => $values ) {
+					    $_product = $values['data'];
+					    if ( $_product->id == $duplicate_of ) {
+					        $present_in_cart = 'YES';
+					        break;
+					    }
+					}
+					if ( isset( $present_in_cart ) && $present_in_cart == 'NO' ) {
 					// call the below function to ensure that the qty and add to cart button are displayed on a variable product page
-					woocommerce_single_variation_add_to_cart_button();
+					   woocommerce_single_variation_add_to_cart_button();
+					}
 				} else {
 					$attribute_fields_str = ',tyche: 1';
 				}
@@ -1052,6 +1063,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								$attribute_name_array = explode( '_', $attr_key );
 								$attribute_array[$attribute_name_array[1]] = $attr_value;
 							}
+							$variation_id = $booking_details['_variation_id'];
 						}
 					}
 					
@@ -1154,6 +1166,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 									jQuery( "#<?php echo $attr_key;?>").val('<?php echo $attr_value;?>');
 									<?php
 								} 
+								?>
+								jQuery(".variation_id").val('<?php echo $variation_id;?>');
+								<?php 
 							} 
 							?>
 							// Populate the Booking date
