@@ -1,14 +1,34 @@
 <?php
+// by default we show the tell a friend div
 $show_tell_friend    = 'block';
+// by default we hide the Thank You div
 $show_another_friend = 'none';
+/* Create an object for the session handler class
+ This needs to be done as the session is destroyed for a guest user on the Thank You page
+ Without the session, the notices cannot be displayed, hence we need to recreate and destroy the session for guest users*/
+$session_obj = new WC_Session_Handler();
+// create an array of all the notices in the session
 $all_notices         = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
-	if ( $key == 'success' && $value[0] == 'Email sent successfully.' ) {
+    $success_message = __( 'Email sent successfully.', 'woocommerce-booking' );
+	if ( $key == 'success' && $value[0] == $success_message ) {
 		$show_tell_friend = 'none';
 		$show_another_friend = 'block';
+		// if it's a guest user
+		if ( ! is_user_logged_in() ) {
+		    // destroy the session once the email is sent
+		    $session_obj->destroy_session();
+		}
 	}
 }
 wc_print_notices();
+// check if a session exists
+$session_status = $session_obj->has_session();
+if ( isset( $session_status ) && $session_status == true ) {
+} else {
+    // if not, create one, so the notices can be added and displayed
+    $session_obj->set_customer_session_cookie(true);
+}
 ?>
 <div id="content" class="col-full">
 <br>
