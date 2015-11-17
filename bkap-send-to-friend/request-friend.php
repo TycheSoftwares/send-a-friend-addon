@@ -47,8 +47,6 @@ if ( isset( $session_status ) && $session_status == true ) {
 		// Booking Settings
 		$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
 		if ( isset( $booking_settings['booking_enable_date'] ) && $booking_settings['booking_enable_date'] == 'on' ) {
-			// Add the product to the list of selected products as the checkoboxes are selected by default
-			$product_list .= $product_id . ',';
 			// Get the date and time slot label
 			$booking_date = $value['wapbk_booking_date'];
 			$checkout_date = $booking_time = '';
@@ -68,6 +66,8 @@ if ( isset( $session_status ) && $session_status == true ) {
 				$display = 'YES';
 			}
 			if ( $display == "YES" ) {
+			    // Add the product to the list of selected products as the checkoboxes are selected by default
+			    $product_list .= $product_id . ',';
 				echo '<input class="bkap_product_select" type="checkbox" id="product_' . $value["product_id"] . '" name="product_' . $value["product_id"] . '" checked onClick="add_product(' . $value["product_id"] . ')">';
 				echo '&nbsp;&nbsp;<a href="' . get_permalink( $value["product_id"]) . '">' . $value["name"] . '</a><br>';
 			}

@@ -35,7 +35,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 
 			$url = '';
 			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-			if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+			if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
 			    $tell_friend_page_url = 'send-booking-to-friend';
 			}
 				

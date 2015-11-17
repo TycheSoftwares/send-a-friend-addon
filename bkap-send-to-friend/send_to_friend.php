@@ -133,7 +133,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			add_option( 'bkap_friend_availability_msg_single_days', 'We still have <available_spots> spaces left for this date.' );
 			add_option( 'bkap_friend_availability_msg_date_time', 'We still have <available_spots> spaces left for this date and time slot.' );
 			add_option( 'bkap_friend_availability_msg_multiple_days', 'We still have <available_spots> spaces left for this date range.' );
-			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
+			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 10px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
 			add_option( 'bkap_friend_tell_friend_page_url', 'send-booking-to-friend' );
 				
 		}
@@ -486,7 +486,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$button_css = stripslashes( get_option( 'bkap_friend_button_css' ) );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $button_css ) &&  $button_css == '' ) {
-				$button_css = 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 2px;padding-bottom: 2px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;';
+				$button_css = 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 10px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
@@ -621,7 +621,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$month = date( 'm', $current_time );
 					$day = date( 'd', $current_time );
 					$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-					if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+					if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
 					    $tell_friend_page_url = 'send-booking-to-friend';
 					}
 					switch ( $permalink_structure ) {
@@ -780,7 +780,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$url = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
 			}
 			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-			if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+			if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
 			    $tell_friend_page_url = 'send-booking-to-friend';
 			}
 			$page_url_setting = '/' . trim( $tell_friend_page_url ) . '/';
@@ -819,7 +819,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    $month = date( 'm', $current_time );
 		    $day = date( 'd', $current_time );
 		    $tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-		    if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+		    if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
 		        $tell_friend_page_url = 'send-booking-to-friend';
 		    }
 		    switch ( $permalink_structure ) {
