@@ -613,7 +613,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					?>
 					<br>
 					<?php
-					echo __( $message );
+					echo $message;
 				    $url = '';
 					$permalink_structure = get_option( 'permalink_structure' );
 					$current_time = current_time( 'timestamp' );
@@ -865,9 +865,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$email_content = $this->get_template();
 			// Replace all the shortcodes with real time data
 			// client name
-			$email_content = str_replace( '<client_name>', $_POST['client_name'], $email_content );
+			$email_content = str_replace( '{{client_name}}', $_POST['client_name'], $email_content );
 			// site name
-			$email_content = str_replace( '<site_name>', get_option( 'blogname' ), $email_content );
+			$email_content = str_replace( '{{site_name}}', get_option( 'blogname' ), $email_content );
 			// get the booking date and time labels, so they can be used to retrieve data
 			$booking_date_label = get_option( 'book.date-label' );
 			$booking_time_label = get_option( 'book.time-label' );
@@ -875,7 +875,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			// Product table
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
 								<tr style='background-color:#f4f5f4;'>
-								<th>Product</th><td></td>
+								<th>";
+			$product_table .= __( "Product", 'woocommerce-booking' );
+			$product_table .= "</th><td></td>
 								</tr>";
 			$item_count = 0;
 			foreach ( $items as $key => $value ) {
@@ -939,10 +941,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			} 
 			$product_table .= '</table>';
 			if ( $item_count > 0 ) {
-				$email_content = str_replace( '<product_list>', $product_table, $email_content );
+				$email_content = str_replace( '{{product_list}}', $product_table, $email_content );
 				// Personalized msg
 				$per_msg = stripslashes( $_POST['msg_txt'] );
-				$email_content = str_replace( '<personalized_message>', $per_msg, $email_content );
+				$email_content = str_replace( '{{personalized_message}}', $per_msg, $email_content );
 				// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
 				$recipients = $_POST['friend_email'];
 				// Create the header, mark admin and client in cc
@@ -954,10 +956,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$headers .= "Content-Type: text/html"."\r\n";
 				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
 				// email subject
-				$email_subject = __('Join me at ' . get_option( 'blogname' ) );
-				$email_content_final = __( $email_content );
+				$email_subject = __('Join me at ' . get_option( 'blogname' ), 'woocommerce-booking' );
 				// Send the email
-				wp_mail( '', $email_subject, $email_content_final, $headers );
+				wp_mail( '', $email_subject, $email_content, $headers );
 				$message = 'Email sent successfully.';
 				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'success');
 			} else {

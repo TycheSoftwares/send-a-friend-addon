@@ -11,16 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<p><?php _e( "<client_name> has just made a booking via <site_name> and wanted to invite you to join in with him/her.", 'woocommerce-booking' ); ?></p>
+<p>{{client_name}}<?php _e( " has just made a booking via ", 'woocommerce-booking' );?>{{site_name}}<?php _e(" and wanted to invite you to join in with him/her.", 'woocommerce-booking' ); ?></p>
 
 <p><?php _e( "They've booked the following products:", 'woocommerce-booking' ); ?></p>
 
-<p><?php _e("<product_list>",'woocommerce-booking');?></p>
+<p>{{product_list}}</p>
 
-<p><?php _e("<personalized_message>",'woocommerce-booking');?></p>
+<p>{{personalized_message}}</p>
 
 <p><?php _e("Click the links to book the products for yourself too.",'woocommerce-booking');?></p>
 
-<p><?php _e("Thanks mate,",'woocommerce-booking');?>
+<p><?php _e("Thanks,",'woocommerce-booking');?>
 <br>
-<?php _e("<site_name>",'woocommerce-booking');?></p>
+{{site_name}}</p>
