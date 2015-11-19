@@ -2,8 +2,7 @@
 
 if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 	
-	class bkap_tell_a_friend_page
-	{
+	class bkap_tell_a_friend_page {
 		private $slug = NULL;
 		private $title = NULL;
 		private $content = NULL;
@@ -11,8 +10,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 		private $date = NULL;
 		private $type = NULL;
 
-		public function __construct( $args )
-		{
+		public function __construct( $args ) {
 			if ( !isset( $args[ 'slug' ] ) ) {
 				throw new Exception( 'No slug given for page' );
 			}
@@ -29,8 +27,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 		}
 
 		// filter to create virtual page content for Tell a Friend page
-		public function create_virtual_page( $posts )
-		{
+		public function create_virtual_page( $posts ) {
 			global $wp, $wp_query;
 
 			$url = '';
@@ -43,7 +40,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 			if ( preg_match( $page_url_setting, $wp->request ) ) {
 			    $url = 'send-booking-to-friend';
 			}
-			if( $url != '' && ( strcasecmp($url, $this->slug) == 0 || $wp->query_vars['page_id'] == $this->slug ) ) {
+			if( $url != '' && ( strcasecmp($url, $this->slug) == 0 || $wp->query_vars[ 'page_id' ] == $this->slug ) ) {
 				
 				//create a fake post intance
 				$post = new stdClass;

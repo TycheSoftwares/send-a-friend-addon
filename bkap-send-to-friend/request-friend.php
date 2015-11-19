@@ -1,12 +1,14 @@
 <?php
 // by default we show the tell a friend div
-$show_tell_friend    = 'block';
+$show_tell_friend = 'block';
 // by default we hide the Thank You div
 $show_another_friend = 'none';
+
 /* Create an object for the session handler class
  This needs to be done as the session is destroyed for a guest user on the Thank You page
  Without the session, the notices cannot be displayed, hence we need to recreate and destroy the session for guest users*/
 $session_obj = new WC_Session_Handler();
+
 // create an array of all the notices in the session
 $all_notices         = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
@@ -22,47 +24,48 @@ foreach( $all_notices as $key => $value ) {
 	}
 }
 wc_print_notices();
+
 // check if a session exists
 $session_status = $session_obj->has_session();
 if ( isset( $session_status ) && $session_status == true ) {
 } else {
     // if not, create one, so the notices can be added and displayed
-    $session_obj->set_customer_session_cookie(true);
+    $session_obj->set_customer_session_cookie( true );
 }
 ?>
+
 <div id="content" class="col-full">
 <br>
 <div id="tell_a_friend" style="display:<?php echo $show_tell_friend; ?>">
 	<p>
-		Enter the details of your friends below and we'll email and invite them to join you on your booked days below.
+		<?php _e( 'Enter the details of your friends below and we\'ll email and invite them to join you on your booked days below.', 'bkap-send-to-friend' );?>
 	</p>
 	<br>
 	<?php 
-	$order = new WC_Order( $_GET['order_id'] );
+	$order = new WC_Order( $_GET[ 'order_id' ] );
 	$items = $order->get_items();
 	$product_list = '';
 
 	foreach ( $items as $key => $value ) {
-		$product_id = $value['product_id'];
+		$product_id = $value[ 'product_id' ];
 		// Booking Settings
 		$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
-		if ( isset( $booking_settings['booking_enable_date'] ) && $booking_settings['booking_enable_date'] == 'on' ) {
+		if ( isset( $booking_settings[ 'booking_enable_date' ] ) && $booking_settings[ 'booking_enable_date' ] == 'on' ) {
 			// Get the date and time slot label
-			$booking_date = $value['wapbk_booking_date'];
+			$booking_date = $value[ 'wapbk_booking_date' ];
 			$checkout_date = $booking_time = '';
-			if ( isset( $value['wapbk_checkout_date'] ) ) {
-				$checkout_date = $value['wapbk_checkout_date'];
+			if ( isset( $value[ 'wapbk_checkout_date' ] ) ) {
+				$checkout_date = $value[ 'wapbk_checkout_date' ];
 			}
-			if ( isset( $value['wapbk_time_slot'] ) ) {
-				$booking_time = $value['wapbk_time_slot'];
+			if ( isset( $value[ 'wapbk_time_slot' ] ) ) {
+				$booking_time = $value[ 'wapbk_time_slot' ];
 			}
 			// Get the availability for the product
-			$availability = send_to_friend::get_availability($product_id, $booking_date, $checkout_date, $booking_time );
+			$availability = send_to_friend::get_availability( $product_id, $booking_date, $checkout_date, $booking_time );
 			$display = 'NO';
 			if ( $availability > 0 ) {
 				$display = 'YES';
-			}
-			else if ( $availability === "Unlimited" ) {
+			} else if ( $availability === "Unlimited" ) {
 				$display = 'YES';
 			}
 			if ( $display == "YES" ) {
@@ -79,7 +82,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	<script type="text/javascript">
 	function add_product( product_id ) {
 		var field_name = 'product_' + product_id;
-		if ( jQuery( "input[name="+field_name+"]").attr( "checked" ) ) {
+		if ( jQuery( "input[name="+field_name+"]" ).attr( "checked" ) ) {
 			var already_selected = jQuery( "#selected_products" ).val();
 			already_selected += product_id + ",";
 			jQuery( "#selected_products" ).val( already_selected );
@@ -98,9 +101,9 @@ if ( isset( $session_status ) && $session_status == true ) {
 			jQuery( "#selected_products" ).val( final_list );
 		}
 		if ( jQuery( "#selected_products" ).val() == '' ) {
-			jQuery( '#send_friend').prop( 'disabled', true ).css( 'cursor', 'default' );
+			jQuery( '#send_friend' ).prop( 'disabled', true ).css( 'cursor', 'default' );
 		} else {
-			jQuery( '#send_friend').prop( 'disabled', false ).css( 'cursor', 'pointer' );
+			jQuery( '#send_friend' ).prop( 'disabled', false ).css( 'cursor', 'pointer' );
 		}
 	}
 	</script>
@@ -109,7 +112,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	<table style="width:100%;max-width:750px;">
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="client_name"><?php _e( 'Your name', 'bkap-send-to-friend' );?></label>
+				<label for="client_name"><?php _e( 'Your name', 'bkap-send-to-friend' ); ?></label>
 			</th>
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="client_name" id="client_name" value="<?php echo $order->billing_first_name . " " . $order->billing_last_name; ?>">
@@ -117,7 +120,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 		</tr>
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="client_email"><?php _e( 'Your email', 'bkap-send-to-friend' );?></label>
+				<label for="client_email"><?php _e( 'Your email', 'bkap-send-to-friend' ); ?></label>
 			</th>
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="client_email" id="client_email" value="<?php echo $order->billing_email; ?>">
@@ -130,12 +133,12 @@ if ( isset( $session_status ) && $session_status == true ) {
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="friend_email" id="friend_email" >
 				<br>
-				(If more than one, seperate using commas)
+				<?php _e( '(If more than one, seperate using commas)', 'bkap-send-to-friend' ); ?>
 			</td>
 		</tr>
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="email_message"><?php _e( 'Personalized Message (optional)', 'bkap-send-to-friend' );?></label>
+				<label for="email_message"><?php _e( 'Personalized Message (optional)', 'bkap-send-to-friend' ); ?></label>
 			</th>
 			<td>
 				<textarea style="width:100%;max-width:400px;" name="email_message" id="email_message"></textarea>
@@ -164,10 +167,10 @@ if ( isset( $session_status ) && $session_status == true ) {
 </div>
 <div id="tell_another_friend" style="display:<?php echo $show_another_friend; ?>">
 	<p>
-		Thank you for sharing with a friend. 
+		<?php _e( 'Thank you for sharing with a friend.', 'bkap-send-to-friend' ); ?> 
 	</p>
 	<p>
-		They have been notified via email.
+		<?php _e( 'They have been notified via email.', 'bkap-send-to-friend' ); ?>
 	</p>
 	<br>
 	<?php 
@@ -178,7 +181,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	$month = date( 'm', $current_time );
 	$day = date( 'd', $current_time );
 	$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-	if( isset( $tell_friend_page_url ) && $tell_friend_page_url != '' ) {
+	if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
 	    $tell_friend_page_url = 'send-booking-to-friend';
 	}
 	switch ( $permalink_structure ) {

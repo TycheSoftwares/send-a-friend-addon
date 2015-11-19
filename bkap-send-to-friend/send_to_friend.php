@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: Send to a Friend Addon
-Plugin URI: http://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin
+Plugin URI: https://www.tychesoftwares.com/store/premium-plugins/send-to-friend-addon-woocommerce-booking-appointment-plugin
 Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products. To get started: Go to <strong>Dashboard -> <a href="admin.php?page=woocommerce_booking_page&action=addon_settings">Booking</a></strong>. 
 Version: 1.0
 Author: Tyche Softwares
@@ -57,20 +57,27 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    
 		    // Wordpress settings API
 		    add_action('admin_init', array( &$this, 'bkap_friend_plugin_options' ) );
+		    
 		    // Add settings link on the Plugins page
 		    add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'bkap_plugin_settings_link' ) );
+		    
 		    // Add the new settings tab for the addon
 		    add_action( 'bkap_add_addon_settings', array( &$this, 'bkap_send_friend_tab' ), 10 );
+			
 			// Add the Book another slot and send to friend button on the Order Received Page and the customer emails
 			add_action( 'woocommerce_order_item_meta_end', array( &$this, 'bkap_completed_page' ), 10, 3 );
+			
 			// redirect to the 'tell a friend' page
 			add_action( 'init', array( &$this, 'load_tell_a_friend_page' ) );
+			
 			// Ajax calls
 			add_action( 'init', array( &$this, 'bkap_send_friend_load_ajax' ) );
+			
 			// pre-populate date and time slots on the front end product page
 			add_action( 'woocommerce_before_add_to_cart_button', array( &$this, 'bkap_prepopulate_data' ), 99 );
 			
 		}
+		
 		/*******************************************************
 		 * Functions
 		 ******************************************************/
@@ -96,10 +103,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function bkap_send_friend_load_ajax() {
 			if ( !is_user_logged_in() ){
-				add_action('wp_ajax_nopriv_bkap_send_email_to_friend', array(&$this, 'bkap_send_email_to_friend'));
-			}
-			else {
-				add_action('wp_ajax_bkap_send_email_to_friend', array(&$this, 'bkap_send_email_to_friend'));
+				add_action( 'wp_ajax_nopriv_bkap_send_email_to_friend', array( &$this, 'bkap_send_email_to_friend' ) );
+			} else {
+				add_action( 'wp_ajax_bkap_send_email_to_friend', array( &$this, 'bkap_send_email_to_friend' ) );
 			}
 		}
 		
@@ -114,7 +120,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @return array
 		 */
 		function bkap_plugin_settings_link( $links ) {
-			$setting_link['settings'] = '<a href="'. esc_url( get_admin_url( null, 'admin.php?page=woocommerce_booking_page&action=addon_settings') ) .'">Settings</a>';
+			$setting_link[ 'settings' ] = '<a href="' . esc_url( get_admin_url( null, 'admin.php?page=woocommerce_booking_page&action=addon_settings' ) ) . '">Settings</a>';
 			$links = $setting_link + $links;
 			return $links;
 		}
@@ -124,7 +130,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 *
 		 * @since 1.0
 		 */
-		function bkap_send_to_friend_activate() {
+		function bkap_send_to_friend_activate() {			
 			//Set default settings
 			add_option( 'bkap_friend_enable_send_a_friend', '' );
 			add_option( 'bkap_friend_enable_admin_cc', '' );
@@ -136,10 +142,12 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			add_option( 'bkap_friend_availability_msg_single_days', 'We still have <available_spots> spaces left for this date.' );
 			add_option( 'bkap_friend_availability_msg_date_time', 'We still have <available_spots> spaces left for this date and time slot.' );
 			add_option( 'bkap_friend_availability_msg_multiple_days', 'We still have <available_spots> spaces left for this date range.' );
-			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 10px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
+			
+			add_option( 'bkap_friend_button_css', 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 5px;padding-bottom: 5px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;' );
 			add_option( 'bkap_friend_tell_friend_page_url', 'send-booking-to-friend' );
 				
 		}
+		
 		/**
 		 * Wordpress Settings API
 		 * 
@@ -150,102 +158,103 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_plugin_options() {
+			
 			// First, we register a section. This is necessary since all future options must belong to a section
 			add_settings_section(
 					'bkap_friend_settings_section',         // ID used to identify this section and with which to register options
-					__('Send to a Friend Addon Settings', 'bkap-send-to-friend'),                  // Title to be displayed on the administration page
-					array($this, 'bkap_friend_callback' ), // Callback used to render the description of the section
+					__( 'Send to a Friend Addon Settings', 'bkap-send-to-friend' ),                  // Title to be displayed on the administration page
+					array( $this, 'bkap_friend_callback' ), // Callback used to render the description of the section
 					'woocommerce_booking_page'     // Page on which to add this section of options
 			);
 				
 			add_settings_field(
 					'bkap_friend_enable_send_a_friend',
-					__('Enable a user to send booking details to a friend:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_enable_friend_callback' ),
+					__( 'Enable a user to send booking details to a friend:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_enable_friend_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Yes, show the \'Book Another\' and \'Send to a Friend\' buttons on the Thank You page and Order emails.', 'bkap-send-to-friend') )
+					array( __( 'Yes, show the \'Book Another\' and \'Send to a Friend\' buttons on the Thank You page and Order emails.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_enable_admin_cc',
-					__('Mark the admin in cc in emails sent to friends:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_enable_admin_cc_callback' ),
+					__( 'Mark the admin in cc in emails sent to friends:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_enable_admin_cc_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'bkap-send-to-friend') )
+					array( __( 'Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_book_another_button_text',
-					__('Text for the Book Another Space button:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_book_another_button_text_callback' ),
+					__( 'Text for the Book Another Space button:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_book_another_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Book Another Space button on the Thank You page and Order emails.', 'bkap-send-to-friend') )
+					array( __( 'Text for the Book Another Space button on the Thank You page and Order emails.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_send_friend_button_text',
-					__('Text for the Send to a Friend button:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_send_friend_button_text_callback' ),
+					__( 'Text for the Send to a Friend button:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_send_friend_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Send to a Friend button on the Thank You page and Order emails.', 'bkap-send-to-friend') )
+					array( __( 'Text for the Send to a Friend button on the Thank You page and Order emails.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_email_button_text',
-					__('Text for the button in emails sent to friends:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_email_button_text_callback' ),
+					__( 'Text for the button in emails sent to friends:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_email_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Book me in button which appears in emails sent to friends.', 'bkap-send-to-friend') )
+					array( __( 'Text for the Book me in button which appears in emails sent to friends.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_single_days',
-					__('Message for availability left for single day bookings:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_avail_msg_single_days_callback' ),
+					__( 'Message for availability left for single day bookings:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_avail_msg_single_days_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with single day bookings.', 'bkap-send-to-friend') )
+					array( __( 'Availability Message to be displayed in emails for products with single day bookings.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_date_time',
-					__('Message for availability left for date and time slot bookings:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_avail_msg_date_time_callback' ),
+					__( 'Message for availability left for date and time slot bookings:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_avail_msg_date_time_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with date and time bookings.', 'bkap-send-to-friend') )
+					array( __( 'Availability Message to be displayed in emails for products with date and time bookings.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_multiple_days',
-					__('Message for availability left for multiple day bookings:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_avail_msg_multiple_days_callback' ),
+					__( 'Message for availability left for multiple day bookings:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_avail_msg_multiple_days_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with multiple day bookings.', 'bkap-send-to-friend') )
+					array( __( 'Availability Message to be displayed in emails for products with multiple day bookings.', 'bkap-send-to-friend' ) )
 			);
 				
 			add_settings_field(
 					'bkap_friend_button_css',
-					__('Enter the css to be applied to the buttons displayed on the Thank You page and Order emails:', 'bkap-send-to-friend'),
-					array($this, 'bkap_friend_button_css_callback' ),
+					__( 'Enter the css to be applied to the buttons displayed on the Thank You page and Order emails:', 'bkap-send-to-friend' ),
+					array( $this, 'bkap_friend_button_css_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'bkap-send-to-friend') )
+					array( __( 'The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'bkap-send-to-friend' ) )
 			);
 			
 			add_settings_field(
 			         'bkap_friend_tell_friend_page_url',
-			         __('Tell A Friend Address (URL):', 'bkap-send-to-friend'),
-			         array($this, 'bkap_friend_tell_friend_page_url_callback' ),
+			         __( 'Tell A Friend Address (URL):', 'bkap-send-to-friend' ),
+			         array( $this, 'bkap_friend_tell_friend_page_url_callback' ),
 			         'woocommerce_booking_page',
 			         'bkap_friend_settings_section',
-			         array( __('/?order_id={order_id} . The URL that should be used for the Tell A Friend Page.', 'bkap-send-to-friend') )
+			         array( __( '/?order_id={order_id} . The URL that should be used for the Tell A Friend Page.', 'bkap-send-to-friend' ) )
 			);
 			
 			// Finally, we register the fields with WordPress
@@ -307,7 +316,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_callback() {
-		
 		}
 		
 		/**
@@ -489,7 +497,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$button_css = stripslashes( get_option( 'bkap_friend_button_css' ) );
 			// This condition added to avoid the notice displyed when no text is set
 			if( isset( $button_css ) &&  $button_css == '' ) {
-				$button_css = 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 10px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;';
+				$button_css = 'display: block;background: #f4f5f4;width: 160px;height: 35px;padding-top: 5px;padding-bottom: 5px;text-align: center;border-radius: 5px;color: black;font-family: Calibri;font-size: 110%;border: 1px solid;margin-top: 5px;';
 			}
 			// Next, we update the name attribute to access this element's ID in the context of the display options array
 			// We also access the show_header element of the options collection in the call to the checked() helper function
@@ -527,7 +535,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_tell_friend_page_url_save_callback( $input ) {
-		    if (isset( $input ) && $input != '' ) {
+		    if ( isset( $input ) && $input != '' ) {
 		        $new_input = $input;
 		    } else {
 		        $new_input = 'send-booking-to-friend';
@@ -536,6 +544,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    }
 		    return $new_input;
 		}
+		
 		/**
 		 * Add a new tab in Booking->Settings menu
 		 *
@@ -546,8 +555,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 *  @since 1.0
 		 */
 		function bkap_send_friend_tab() {
-			if ( isset( $_GET['action'] ) ) {
-				$action = $_GET['action'];
+			if ( isset( $_GET[ 'action' ] ) ) {
+				$action = $_GET[ 'action' ];
 			} else {
 				$action = '';
 			} 
@@ -558,7 +567,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						<?php settings_errors(); ?>
 					    <?php settings_fields( 'bkap_friend_settings' ); ?>
 				        <?php do_settings_sections( 'woocommerce_booking_page' ); ?>
-				        <p>Please note that the Tell a Friend page is not compatible with the Default and Numeric permalink setting defined in Settings->Permalinks.</p> 
+				        <p><?php _e( 'Please note that the Tell a Friend page is not compatible with the Default and Numeric permalink setting defined in Settings->Permalinks.', 'bkap-send-to-friend' ); ?></p> 
 						<?php submit_button(); ?>
 			        </form>
 			    </div>
@@ -576,43 +585,44 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_completed_page( $item_id, $item, $order ) {
-			$product_id = $item['product_id'];
+			$product_id = $item[ 'product_id' ];
+			
 			// Booking Settings
 			$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
+			
 			// get the addon settings
 			$enable_send_a_friend = get_option( 'bkap_friend_enable_send_a_friend' );
-			if ( isset( $booking_settings ) && $booking_settings['booking_enable_date'] == 'on' && isset( $enable_send_a_friend ) && $enable_send_a_friend == 'on' ) {
+			if ( isset( $booking_settings ) && $booking_settings[ 'booking_enable_date' ] == 'on' && isset( $enable_send_a_friend ) && $enable_send_a_friend == 'on' ) {
+				
 				// Get the booking details
-				$booking_date = $item['wapbk_booking_date'];
+				$booking_date = $item[ 'wapbk_booking_date' ];
 				$checkout_date = $booking_time = '';
-				if ( isset( $item['wapbk_checkout_date'] ) ) {
-					$checkout_date = $item['wapbk_checkout_date'];
+				if ( isset( $item[ 'wapbk_checkout_date' ] ) ) {
+					$checkout_date = $item[ 'wapbk_checkout_date' ];
 				}
-				if ( isset( $item['wapbk_time_slot'] ) ) {
-					$booking_time = $item['wapbk_time_slot'];
+				if ( isset( $item[ 'wapbk_time_slot' ] ) ) {
+					$booking_time = $item[ 'wapbk_time_slot' ];
 				}
+				
 				// Get the availability for the product
-				$availability = $this->get_availability( $product_id, $booking_date, $checkout_date, $booking_time);
+				$availability = $this->get_availability( $product_id, $booking_date, $checkout_date, $booking_time );
 				
 				$display = 'NO';
-				if ($availability > 0 ) {
+				if ( $availability > 0 ) {
 					$display = 'YES';
-				}
-				else if ( $availability === "Unlimited" ) {
+				} else if ( $availability === "Unlimited" ) {
 					$display = 'YES';
 				}
 				
-				if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
+				if ( isset( $booking_settings[ 'booking_enable_multiple_day' ] ) && $booking_settings[ 'booking_enable_multiple_day' ] == 'on' ) {
 					$message = get_option( 'bkap_friend_availability_msg_multiple_days' );
-				}
-				else if( $booking_settings['booking_enable_time'] == 'on' ) {
+				} else if( $booking_settings[ 'booking_enable_time' ] == 'on' ) {
 					$message = get_option( 'bkap_friend_availability_msg_date_time' );
-				}
-				else {
+				} else {
 					$message = get_option( 'bkap_friend_availability_msg_single_days' );
 				}
 				$message = str_replace( '<available_spots>', $availability, $message );
-				if ($display == "YES") { 
+				if ( $display == "YES" ) { 
 					?>
 					<br>
 					<?php
@@ -635,7 +645,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
 					        break;
 					    case '/%postname%/':
-					        $url = home_url( '/' ) . $tell_friend_page_url .'/';
+					        $url = home_url( '/' ) . $tell_friend_page_url . '/';
 					        break;
 					    default:
 					        $custom_link = trim( $permalink_structure );
@@ -653,7 +663,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					?> 
 					<br>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'bkap-send-to-friend' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -674,8 +684,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		public static function get_availability( $product_id, $booking_date, $checkout_date, $booking_time ) {
 			global $wpdb;
+			
 			// Default the availability to 0
 			$availability = 0;
+			
 			// Get all the booking details
 			$product_date = $booking_date;
 			$product_checkout_date = $product_from_time = $product_to_time = '';
@@ -693,16 +705,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			}
 			
 			// check the booking type
-			$booking_settings = get_post_meta( $product_id , 'woocommerce_booking_settings', true);
+			$booking_settings = get_post_meta( $product_id , 'woocommerce_booking_settings', true );
+			
 			// multiple day
-			if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
+			if ( isset( $booking_settings[ 'booking_enable_multiple_day' ] ) && $booking_settings[ 'booking_enable_multiple_day' ] == 'on' ) {
 				$date_checkout = date( 'd-n-Y', strtotime( $product_checkout_date ) );
 				$date_checkin = date( 'd-n-Y', strtotime( $product_date ) );
 				$order_dates = bkap_common::bkap_get_betweendays( $date_checkin, $date_checkout );
 				$todays_date = date( 'Y-m-d' );
 				
 				$query_date ="SELECT DATE_FORMAT( start_date, '%d-%c-%Y' ) as start_date, DATE_FORMAT( end_date, '%d-%c-%Y' ) as end_date FROM ".$wpdb->prefix."booking_history
-				WHERE start_date >='".$todays_date."' AND post_id = '".$product_id."'";
+				                WHERE start_date >='" . $todays_date . "' AND post_id = '" . $product_id . "'";
 				
 				$results_date = $wpdb->get_results( $query_date );
 				
@@ -717,8 +730,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$dates_new_arr = array_count_values( $dates_new );
 				
 				$lockout = 0;
-				if ( isset( $booking_settings['booking_date_lockout'] ) && ( $booking_settings['booking_date_lockout'] != '' || $booking_settings['booking_date_lockout'] != 0 ) ) {
-					$lockout = $booking_settings['booking_date_lockout'];
+				if ( isset( $booking_settings[ 'booking_date_lockout' ] ) && ( $booking_settings[ 'booking_date_lockout' ] != '' || $booking_settings[ 'booking_date_lockout' ] != 0 ) ) {
+					$lockout = $booking_settings[ 'booking_date_lockout' ];
 					
 					$date_to_check = $order_dates[0];
 					if ( array_key_exists( $date_to_check, $dates_new_arr ) ) {
@@ -726,13 +739,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					} else {
 						$availability = $lockout;
 					}
-				}
-				else {
+				} else {
 					$availability = 'Unlimited';
 				}
-			}
-			// date and time
-			else if( $booking_settings['booking_enable_time'] == 'on' ) {
+			} else if( $booking_settings[ 'booking_enable_time' ] == 'on' ) { // date and time
 				$availability_query = "SELECT total_booking, available_booking FROM `".$wpdb->prefix."booking_history`
 										WHERE post_id = %d
 										AND start_date = %s
@@ -748,9 +758,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$availability = $get_availability[0]->available_booking;
 					}
 				}
-			}
-			// only day bookings
-			else {
+			} else { // only day bookings
 				$availability_query = "SELECT total_booking, available_booking FROM `".$wpdb->prefix."booking_history`
 										WHERE post_id = %d
 										AND start_date = %s
@@ -768,7 +776,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			return $availability;
 		}
 
-		/*
+		/**
 		 * Load Tell a Friend page by creating a virtual page so it works with all themes
 		 * 
 		 * the content passed to that page is of the view file 'request-friend.php'
@@ -779,8 +787,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		function load_tell_a_friend_page() {
 
 			$url = '';
-			if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != '' ) {
-				$url = trim( parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' );
+			if ( isset( $_SERVER[ 'REQUEST_URI' ] ) && $_SERVER[ 'REQUEST_URI' ] != '' ) {
+				$url = trim( parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH ), '/' );
 			}
 			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
 			if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
@@ -813,7 +821,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * 
 		 * @since 1.0
 		 */ 
-		function bkap_send_email_to_friend() {
+		function bkap_send_email_to_friend() {	    
 		    // create the tell a friend page url to return back once the email is sent
 		    $url = '';
 		    $permalink_structure = get_option( 'permalink_structure' );
@@ -833,7 +841,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
 		            break;
 		        case '/%postname%/':
-		            $url = home_url( '/' ) . $tell_friend_page_url .'/';
+		            $url = home_url( '/' ) . $tell_friend_page_url . '/';
 		            break;
 		        default:
 		            $custom_link = trim( $permalink_structure );
@@ -848,33 +856,38 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		             
 		            break;        
 		    }
+			
 			// check if the email address field is populated for the friends
-			if( isset( $_POST['friend_email'] ) ) {
-				if ( trim( $_POST['friend_email'] ) == '' ) {
+			if( isset( $_POST[ 'friend_email' ] ) ) {
+				if ( trim( $_POST[ 'friend_email' ] ) == '' ) {
 					$message = 'Please enter the email address of atleast one friend.';
-					wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error');
-					echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
+					wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error' );
+					echo( esc_url_raw( add_query_arg( 'order_id', $_POST[ 'order_id' ], $url ) ) );
 					die;
 				}
 			}
+			
 			// get the addon settings
 			$enable_admin_cc = get_option( 'bkap_friend_enable_admin_cc' );
 			// get the order object
-			$order = new WC_Order( $_POST['order_id'] );
+			$order = new WC_Order( $_POST[ 'order_id' ] );
 			$items = $order->get_items();
 			//products selected by client
-			$products = explode( ',', $_POST['details'] );
+			$products = explode( ',', $_POST[ 'details' ] );
+			
 			//get the content
 			$email_content = $this->get_template();
+			
 			// Replace all the shortcodes with real time data
 			// client name
-			$email_content = str_replace( '{{client_name}}', $_POST['client_name'], $email_content );
+			$email_content = str_replace( '{{client_name}}', $_POST[ 'client_name' ], $email_content );
 			// site name
 			$email_content = str_replace( '{{site_name}}', get_option( 'blogname' ), $email_content );
 			// get the booking date and time labels, so they can be used to retrieve data
 			$booking_date_label = get_option( 'book.date-label' );
 			$booking_time_label = get_option( 'book.time-label' );
 			$checkout_date_label = trim( strip_tags( get_option( 'checkout.date-label' ) ) );
+			
 			// Product table
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
 								<tr style='background-color:#f4f5f4;'>
@@ -883,22 +896,24 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$product_table .= "</th><td></td>
 								</tr>";
 			$item_count = 0;
-			foreach ( $items as $key => $value ) {
+			foreach ( $items as $key => $value ) {		
 				// Add the product in the table only if it has been selected by the client on the 'Tell a Friend' Page
-				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value['product_id'], $products ) ) {
+				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value[ 'product_id' ], $products ) ) {
+					
 					// Add order Id to product link
-					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $value['product_id'] ) ) );
+					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $value[ 'product_id' ] ) ) );
 					// Add the product name, booking details
-					$booking_date = $value['wapbk_booking_date'];
+					$booking_date = $value[ 'wapbk_booking_date' ];
 					$checkout_date = $time_slot = '';
-					if ( isset( $value['wapbk_checkout_date'] ) ) {
-						$checkout_date = $value['wapbk_checkout_date'];
+					if ( isset( $value[ 'wapbk_checkout_date' ] ) ) {
+						$checkout_date = $value[ 'wapbk_checkout_date' ];
 					}
-					if ( isset( $value['wapbk_time_slot'] ) ) {
-						$time_slot = $value['wapbk_time_slot'];
+					if ( isset( $value[ 'wapbk_time_slot' ] ) ) {
+						$time_slot = $value[ 'wapbk_time_slot' ];
 					}
+					
 					// Get the availability for the product
-					$availability = $this->get_availability( $value['product_id'], $booking_date, $checkout_date, $time_slot );
+					$availability = $this->get_availability( $value[ 'product_id' ], $booking_date, $checkout_date, $time_slot );
 						
 					$display = 'NO';
 					if ( $availability > 0 ) {
@@ -910,7 +925,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$item_count++;
 						$product_table .= "<tr>
 										<td>";
-						$product_table .= "<a href='" . $button_link . "'>" . $value['name'] . "</a><br>";
+						$product_table .= "<a href='" . $button_link . "'>" . $value[ 'name' ] . "</a><br>";
 						$product_table .= "<b>" . $booking_date_label . ":</b><br>".
 											$value[$booking_date_label];
 						if ( isset( $value[$checkout_date_label] ) ) {
@@ -924,18 +939,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$product_table .= '</td>';
 						
 						// check the booking type
-						$booking_settings = get_post_meta( $value['product_id'], 'woocommerce_booking_settings', true);
+						$booking_settings = get_post_meta( $value[ 'product_id' ], 'woocommerce_booking_settings', true );
 							
-						if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
+						if ( isset( $booking_settings[ 'booking_enable_multiple_day' ] ) && $booking_settings[ 'booking_enable_multiple_day' ] == 'on' ) {
 							$message = get_option( 'bkap_friend_availability_msg_multiple_days' );
-						}
-						else if( $booking_settings['booking_enable_time'] == 'on' ) {
+						} else if( $booking_settings[ 'booking_enable_time' ] == 'on' ) {
 							$message = get_option( 'bkap_friend_availability_msg_date_time' );
-						}
-						else {
+						} else {
 							$message = get_option( 'bkap_friend_availability_msg_single_days' );
 						}
 						$message = str_replace( '<available_spots>', $availability, $message );
+						
 						// Display availability message and the button to allow the user to directly book an order.
 						$product_table .= "<td>" . $message . "<br>";
 						$product_table .= "<a href='" . $button_link . "' style='".get_option( 'bkap_friend_button_css' ) ."'>" . get_option( 'bkap_friend_email_button_text' ) . "</a></td></tr>";
@@ -945,30 +959,35 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$product_table .= '</table>';
 			if ( $item_count > 0 ) {
 				$email_content = str_replace( '{{product_list}}', $product_table, $email_content );
+				
 				// Personalized msg
-				$per_msg = stripslashes( $_POST['msg_txt'] );
+				$per_msg = stripslashes( $_POST[ 'msg_txt' ] );
 				$email_content = str_replace( '{{personalized_message}}', $per_msg, $email_content );
+				
 				// Multiple email addresses are taken in using comma as the seperator, hence can be used as is
-				$recipients = $_POST['friend_email'];
+				$recipients = $_POST[ 'friend_email' ];
+				
 				// Create the header, mark admin and client in cc
 				$headers = "From: <" . get_option( 'admin_email' ) . ">" . "\r\n";
 				if ( isset( $enable_admin_cc ) && $enable_admin_cc == 'on' ) {
 					$headers .= "Cc: " . get_option( 'admin_email' ) . "\r\n";
 				}
 				$headers .= "Bcc: " . $recipients . "\r\n";
-				$headers .= "Content-Type: text/html"."\r\n";
+				$headers .= "Content-Type: text/html" . "\r\n";
 				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
+				
 				// email subject
-				$email_subject = __('Join me at ' . get_option( 'blogname' ), 'bkap-send-to-friend' );
+				$email_subject = __( 'Join me at ' . get_option( 'blogname' ), 'bkap-send-to-friend' );
+				
 				// Send the email
 				wp_mail( '', $email_subject, $email_content, $headers );
 				$message = 'Email sent successfully.';
-				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'success');
+				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'success' );
 			} else {
 				$message = 'Email could not be sent as all the items have been fully booked.';
-				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error');
+				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error' );
 			}
-			echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
+			echo( esc_url_raw( add_query_arg( 'order_id', $_POST[ 'order_id' ], $url ) ) );
 			die();
 		}
 		
@@ -980,7 +999,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function get_template() {
-			$order = wc_get_order( $_POST['order_id'] );
+			$order = wc_get_order( $_POST[ 'order_id' ] );
 			ob_start();
 			wc_get_template( 'send-friend-email-template.php', array(), '', dirname( __FILE__ ) . '/email_templates/' );
 			return ob_get_clean();
@@ -996,10 +1015,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 */
 		function bkap_prepopulate_data() {
 			global $post, $wpdb;
+			
 			// If the order ID is present, it means the booking data needs to be pre-populated
-			if ( isset( $_GET['item_id'] ) && $_GET['item_id'] != '' ) {
+			if ( isset( $_GET[ 'item_id' ] ) && $_GET[ 'item_id' ] != '' ) {
 				$duplicate_of = bkap_common::bkap_get_product_id( $post->ID );
-				$item_id = $_GET['item_id'];
+				$item_id = $_GET[ 'item_id' ];
 
 				// default fields
 				$hidden_date = '';
@@ -1015,7 +1035,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$attribute_fields = array();
 					$i = 0;
 					foreach ( $variations as $var_key => $var_val ) {
-						foreach ( $var_val['attributes'] as $a_key => $a_val ) {
+						foreach ( $var_val[ 'attributes' ] as $a_key => $a_val ) {
 							if ( !in_array( $a_key, $attribute_fields ) ) {
 								$attribute_fields[] = $a_key;
 								$attribute_fields_str .= ",\"$a_key\": jQuery(\"[name='$a_key']\").val() ";
@@ -1027,17 +1047,18 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$i++;
 						}
 					}
+					
 					// check if the product is already present in the cart, load the add to cart and qty buttons only if it is not present in the cart 
 					$present_in_cart = 'NO';
 					foreach( WC()->cart->get_cart() as $cart_item_key => $values ) {
-					    $_product = $values['data'];
+					    $_product = $values[ 'data' ];
 					    if ( $_product->id == $duplicate_of ) {
 					        $present_in_cart = 'YES';
 					        break;
 					    }
 					}
 					if ( isset( $present_in_cart ) && $present_in_cart == 'NO' ) {
-					// call the below function to ensure that the qty and add to cart button are displayed on a variable product page
+					   // call the below function to ensure that the qty and add to cart button are displayed on a variable product page
 					   woocommerce_single_variation_add_to_cart_button();
 					}
 				} else {
@@ -1048,48 +1069,51 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$results_order_id = $wpdb->get_results( $wpdb->prepare( $order_id_query, $item_id ) );
 				
 				$order = new WC_Order( $results_order_id[0]->order_id );
-				// check if the order is refunded, trashed or cancelled
-				if( isset( $order->post_status ) && ( $order->post_status != 'wc-cancelled' ) && ( $order->post_status != 'wc-refunded' ) && ( $order->post_status != 'trash' ) && ( $order->post_status != '' ) && ( $order->post_status != 'wc-failed' ) ) {
 				
+				// check if the order is refunded, trashed or cancelled
+				if( isset( $order->post_status ) && ( $order->post_status != 'wc-cancelled' ) && ( $order->post_status != 'wc-refunded' ) && ( $order->post_status != 'trash' ) && ( $order->post_status != '' ) && ( $order->post_status != 'wc-failed' ) ) {	
 					$booking_settings = get_post_meta( $duplicate_of, 'woocommerce_booking_settings', true );
+					
 					// get the booking details from the woocommerce_order_itemmeta table
 					$booking_details = array();
-					$booking_details['_variation_id'] = wc_get_order_item_meta( $item_id, '_variation_id' );
-					$booking_details['_wapbk_booking_date'] = wc_get_order_item_meta( $item_id, '_wapbk_booking_date' );
-					$booking_details['_wapbk_checkout_date'] = wc_get_order_item_meta( $item_id, '_wapbk_checkout_date' );
-					$booking_details['_wapbk_time_slot'] = wc_get_order_item_meta( $item_id, '_wapbk_time_slot' );
+					$booking_details[ '_variation_id' ] = wc_get_order_item_meta( $item_id, '_variation_id' );
+					$booking_details[ '_wapbk_booking_date' ] = wc_get_order_item_meta( $item_id, '_wapbk_booking_date' );
+					$booking_details[ '_wapbk_checkout_date' ] = wc_get_order_item_meta( $item_id, '_wapbk_checkout_date' );
+					$booking_details[ '_wapbk_time_slot' ] = wc_get_order_item_meta( $item_id, '_wapbk_time_slot' );
 					
-					if ( isset( $booking_details['_variation_id'] ) && $booking_details['_variation_id'] != 0 ) {
+					if ( isset( $booking_details[ '_variation_id' ] ) && $booking_details[ '_variation_id' ] != 0 ) {
 						$attribute_array = array();
-						$attr = wc_get_product_variation_attributes($booking_details['_variation_id']);
+						$attr = wc_get_product_variation_attributes( $booking_details[ '_variation_id' ] );
 						if ( isset( $attr ) && is_array( $attr ) && count( $attr ) > 0 ) {
 							foreach( $attr as $attr_key => $attr_value ) {
 								$attribute_name_array = explode( '_', $attr_key );
 								$attribute_array[$attribute_name_array[1]] = $attr_value;
 							}
-							$variation_id = $booking_details['_variation_id'];
+							$variation_id = $booking_details[ '_variation_id' ];
 						}
 					}
 					
-					if ( isset( $booking_details['_wapbk_booking_date'] ) ) {
-						$booking_date = $booking_details['_wapbk_booking_date'];
+					if ( isset( $booking_details[ '_wapbk_booking_date' ] ) ) {
+						$booking_date = $booking_details[ '_wapbk_booking_date' ];	
 						// Date formats
-						$date_formats = bkap_get_book_arrays('date_formats');
+						$date_formats = bkap_get_book_arrays( 'date_formats' );
 						// get the global settings to find the date & time formats
-						$global_settings = json_decode(get_option('woocommerce_booking_global_settings'));
+						$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
 						$date_format_set = $date_formats[$global_settings->booking_date_format];
 						$display_date = date ( $date_format_set, strtotime( $booking_date ) );
 					}
 					$checkout_date = $booking_time = $display_time = $fixed_block_name = '';
 					$hidden_date_checkout = '';
+					
 					// if multiple days is enabled, fetch the checkout date
-					if ( isset( $booking_settings['booking_enable_multiple_day'] ) && $booking_settings['booking_enable_multiple_day'] == 'on' ) {
-						if ( isset( $booking_details['_wapbk_checkout_date'] ) ) {
-							$checkout_date = $booking_details['_wapbk_checkout_date'];
+					if ( isset( $booking_settings[ 'booking_enable_multiple_day' ] ) && $booking_settings[ 'booking_enable_multiple_day' ] == 'on' ) {
+						if ( isset( $booking_details[ '_wapbk_checkout_date' ] ) ) {
+							$checkout_date = $booking_details[ '_wapbk_checkout_date' ];
 							$hidden_date_checkout = date( 'j-n-Y', strtotime( $checkout_date ) );
 						}
+						
 						// check if fixed blocks is enabled, if yes then calculate the difference between the checkin and checkout date and populate the fixed block name
-						if( isset( $booking_settings['booking_fixed_block_enable'] ) && $booking_settings['booking_fixed_block_enable']  == 'yes' ) {
+						if( isset( $booking_settings[ 'booking_fixed_block_enable' ] ) && $booking_settings[ 'booking_fixed_block_enable' ]  == 'yes' ) {
 							$number_of_days =  strtotime( $checkout_date ) - strtotime( $booking_date );
 							$number = floor( $number_of_days / ( 60*60*24 ) );
 							$fixed_block_query = "SELECT start_day, price FROM `".$wpdb->prefix."booking_fixed_blocks`
@@ -1102,14 +1126,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							}
 						}
 					}
+					
 					// if time settings is enabled, fetch the time slot selected
-					if( $booking_settings['booking_enable_time'] == 'on' ) {
-						if ( isset( $booking_details['_wapbk_time_slot'] ) ) {
-							$booking_time = $booking_details['_wapbk_time_slot'];
+					if( $booking_settings[ 'booking_enable_time' ] == 'on' ) {
+						if ( isset( $booking_details[ '_wapbk_time_slot' ] ) ) {
+							$booking_time = $booking_details[ '_wapbk_time_slot' ];
+							
 							// create a time stamp for the booking date and start time
 							$time_explode = explode( '-', $booking_time );
 							$book_date = $booking_date . ' ' . $time_explode[0];
 							$date_timestamp = strtotime( $book_date );
+							
 							// set the format in which the time is to be displayed
 							$time_format = '12';
 							if ( isset( $global_settings ) ) {
@@ -1119,28 +1146,28 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							$to_time = '';
 							if ( $time_format == '12' ) {
 								
-								$from_time = date('h:i A', strtotime($time_explode[0]));
+								$from_time = date( 'h:i A', strtotime( $time_explode[0] ) );
 								if ( isset( $time_explode[1] ) ) {
-									$to_time = date('h:i A', strtotime($time_explode[1]));
+									$to_time = date( 'h:i A', strtotime( $time_explode[1] ) );
 								}
 								$display_time = $from_time . ' - ' . $to_time;
 							} else {
-								$from_time = date('H:i', strtotime($time_explode[0]));
+								$from_time = date( 'H:i', strtotime( $time_explode[0] ) );
 								if ( isset( $time_explode[1] ) ) {
-									$to_time = date('H:i', strtotime($time_explode[1]));
+									$to_time = date( 'H:i', strtotime( $time_explode[1] ) );
 								}
 								$display_time = $from_time . ' - ' . $to_time;
 							}
 						}
 					}
+					
 					// check if bookings are still available for the given date/s and/or time
 					$availability = $this->get_availability( $duplicate_of, $booking_date, $checkout_date, $booking_time);
 					
 					$pre_populate = 0;
-					if ($availability > 0 ) {
+					if ( $availability > 0 ) {
 						$pre_populate = 1;
-					}
-					else if ( $availability === "Unlimited" ) {
+					} else if ( $availability === "Unlimited" ) {
 						$pre_populate = 1;
 					}
 					
@@ -1150,9 +1177,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						if ( $date_timestamp < $current_time ) {
 							$past_time = 0; // means the booking date and time hv already passed
 						}
-					}
-					else if ( strtotime( $booking_date ) < $current_time ) {
-						// As the Booking date is a past date
+					} else if ( strtotime( $booking_date ) < $current_time ) { // As the Booking date is a past date
 						$pre_populate = $past_date = 0;
 					}
 					
@@ -1162,16 +1187,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						?>
 						<script type="text/javascript">
 						function bkap_init() {
+
 							// If it's a variable product, populate the variations first
 							<?php
 							if ( isset( $attribute_array ) && is_array( $attribute_array ) && count( $attribute_array ) > 0 ) {
 								foreach( $attribute_array as $attr_key => $attr_value ) {
 									?>
-									jQuery( "#<?php echo $attr_key;?>").val('<?php echo $attr_value;?>');
+									jQuery( "#<?php echo $attr_key;?>" ).val( '<?php echo $attr_value; ?>' );
 									<?php
 								} 
 								?>
-								jQuery(".variation_id").val('<?php echo $variation_id;?>');
+								jQuery( ".variation_id" ).val( '<?php echo $variation_id; ?>' );
 								<?php 
 							} 
 							?>
@@ -1180,7 +1206,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							var split = jQuery( "#wapbk_hidden_date" ).val().split( "-" );
 							var bookingDate = new Date( split[2], split[1]-1, split[0] );
 							<?php
-							if ( isset( $booking_settings['enable_inline_calendar'] ) && $booking_settings['enable_inline_calendar'] == 'on' ) { 
+							if ( isset( $booking_settings[ 'enable_inline_calendar' ] ) && $booking_settings[ 'enable_inline_calendar' ] == 'on' ) { 
 							?>
 								var timestamp = Date.parse( bookingDate ); 
 								if ( isNaN( timestamp ) == false ) { 
@@ -1193,6 +1219,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								jQuery( "#booking_calender" ).datepicker( "setDate", bookingDate );
 							<?php 
 							}?>
+
 							// If time is enabled then populate the selected slot
 							if ( jQuery( "#wapbk_bookingEnableTime" ).val() == "on" && jQuery( "#wapbk_booking_times" ).val() == "YES" ) {
 								var sold_individually = jQuery( "#wapbk_sold_individually" ).val();
@@ -1208,6 +1235,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								jQuery.post( '<?php echo get_admin_url() . 'admin-ajax.php'; ?>', data, function( response ) {
 									jQuery( "#ajax_img" ).hide();
 									jQuery( "#show_time_slot" ).html( response );
+
 									// for today if the time slot is past, display a message saying the same
 									<?php 
 									if ( isset( $past_time ) && $past_time == 0 ) {
@@ -1238,12 +1266,12 @@ if ( !class_exists( 'send_to_friend' ) ) {
 											if( sold_individually == "yes" ) {
 												jQuery( ".quantity" ).hide();
 												jQuery( ".payment_type" ).hide();
-												jQuery(".partial_message").hide();
+												jQuery( ".partial_message" ).hide();
 											} else {
 												jQuery( ".quantity" ).show();
 												jQuery( ".payment_type" ).show();
 											}
-										} else if ( jQuery("#time_slot").val() == "" ) {
+										} else if ( jQuery( "#time_slot" ).val() == "" ) {
 											jQuery( ".single_add_to_cart_button" ).hide();
 											jQuery( ".quantity" ).hide();
 		                                    jQuery( ".payment_type" ).hide();
@@ -1259,16 +1287,18 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							} else {
 								// check if multiple day is enabled, if yes then pre-populate the end date
 								if ( jQuery( "#booking_calender_checkout" ).length ) {
+
 									// populate fixed blocks name if its enabled
 									if ( jQuery( "#block_option" ).length ) {
 										jQuery( "#block_option" ).val( '<?php echo $fixed_block_name; ?>' );
 									}
+
 									// populate the checkout date
 									jQuery( "#wapbk_hidden_date_checkout" ).val( '<?php echo $hidden_date_checkout; ?>' );
 									var split = jQuery( "#wapbk_hidden_date_checkout" ).val().split( "-" );
 									var bookingDate = new Date( split[2], split[1]-1, split[0] );
 									<?php
-									if ( isset( $booking_settings['enable_inline_calendar'] ) && $booking_settings['enable_inline_calendar'] == 'on' ) { 
+									if ( isset( $booking_settings[ 'enable_inline_calendar' ] ) && $booking_settings[ 'enable_inline_calendar' ] == 'on' ) { 
 									?>
 										var timestamp = Date.parse( bookingDate ); 
 										if ( isNaN( timestamp ) == false ) { 
@@ -1298,9 +1328,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 											action: 'bkap_get_date_lockout'
 											};
 					
-									jQuery.post( '<?php echo get_admin_url() . 'admin-ajax.php'; ?>', data, function(response)
-									{
-										jQuery( "#show_stock_status" ).html(response);
+									jQuery.post( '<?php echo get_admin_url() . 'admin-ajax.php'; ?>', data, function( response ) {
+										jQuery( "#show_stock_status" ).html( response );
 									});
 								}
 							}
@@ -1318,8 +1347,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							window.onload = bkap_show_status;
 							</script>
 						<?php 
-						}
-						else {
+						} else {
 						?>
 							<script type="text/javascript">
 							function bkap_show_status() {
@@ -1336,5 +1364,4 @@ if ( !class_exists( 'send_to_friend' ) ) {
 	}
 	$send_to_friend = new send_to_friend();
 }
-
 ?>
