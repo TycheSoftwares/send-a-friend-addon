@@ -10,7 +10,7 @@ Author URI: http://www.tychesoftwares.com/
 /**
  * Localisation
  **/
-load_plugin_textdomain('woocommerce-booking', false, dirname( plugin_basename( __FILE__ ) ) . '/');
+load_plugin_textdomain( 'bkap-send-to-friend', false, dirname( plugin_basename( __FILE__ ) ) . '/' );
 include_once( dirname( __FILE__ ) . '/bkap_tell_a_friend_page.php' );
 
 function is_bkap_send_friend_active() {
@@ -21,7 +21,7 @@ function is_bkap_send_friend_active() {
 	}
 }
 
-register_uninstall_hook( __FILE__, 'bkap_send_friend_delete');
+register_uninstall_hook( __FILE__, 'bkap_send_friend_delete' );
 
 /**
  * Delete the addon settings when the addon is uninstalled
@@ -48,10 +48,13 @@ if ( !class_exists( 'send_to_friend' ) ) {
 	class send_to_friend {
 			
 		public function __construct() {
+		    
 			// Display a notice in the admin, when the addon is enabled without the base plugin
 		    add_action( 'admin_notices', array( &$this, 'bkap_send_to_friend_error_notice' ) );
+		    
 		    // Initialize settings
 		    register_activation_hook( __FILE__, array( &$this, 'bkap_send_to_friend_activate' ) );
+		    
 		    // Wordpress settings API
 		    add_action('admin_init', array( &$this, 'bkap_friend_plugin_options' ) );
 		    // Add settings link on the Plugins page
@@ -150,99 +153,99 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			// First, we register a section. This is necessary since all future options must belong to a section
 			add_settings_section(
 					'bkap_friend_settings_section',         // ID used to identify this section and with which to register options
-					__('Send to a Friend Addon Settings', 'woocommerce-booking'),                  // Title to be displayed on the administration page
+					__('Send to a Friend Addon Settings', 'bkap-send-to-friend'),                  // Title to be displayed on the administration page
 					array($this, 'bkap_friend_callback' ), // Callback used to render the description of the section
 					'woocommerce_booking_page'     // Page on which to add this section of options
 			);
 				
 			add_settings_field(
 					'bkap_friend_enable_send_a_friend',
-					__('Enable a user to send booking details to a friend:', 'woocommerce-booking'),
+					__('Enable a user to send booking details to a friend:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_enable_friend_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Yes, show the \'Book Another\' and \'Send to a Friend\' buttons on the Thank You page and Order emails.', 'woocommerce-booking') )
+					array( __('Yes, show the \'Book Another\' and \'Send to a Friend\' buttons on the Thank You page and Order emails.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_enable_admin_cc',
-					__('Mark the admin in cc in emails sent to friends:', 'woocommerce-booking'),
+					__('Mark the admin in cc in emails sent to friends:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_enable_admin_cc_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'woocommerce-booking') )
+					array( __('Mark the site admin in cc in the emails sent to friends from the \'Tell a Friend\' page.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_book_another_button_text',
-					__('Text for the Book Another Space button:', 'woocommerce-booking'),
+					__('Text for the Book Another Space button:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_book_another_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Book Another Space button on the Thank You page and Order emails.', 'woocommerce-booking') )
+					array( __('Text for the Book Another Space button on the Thank You page and Order emails.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_send_friend_button_text',
-					__('Text for the Send to a Friend button:', 'woocommerce-booking'),
+					__('Text for the Send to a Friend button:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_send_friend_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Send to a Friend button on the Thank You page and Order emails.', 'woocommerce-booking') )
+					array( __('Text for the Send to a Friend button on the Thank You page and Order emails.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_email_button_text',
-					__('Text for the button in emails sent to friends:', 'woocommerce-booking'),
+					__('Text for the button in emails sent to friends:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_email_button_text_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Text for the Book me in button which appears in emails sent to friends.', 'woocommerce-booking') )
+					array( __('Text for the Book me in button which appears in emails sent to friends.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_single_days',
-					__('Message for availability left for single day bookings:', 'woocommerce-booking'),
+					__('Message for availability left for single day bookings:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_avail_msg_single_days_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with single day bookings.', 'woocommerce-booking') )
+					array( __('Availability Message to be displayed in emails for products with single day bookings.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_date_time',
-					__('Message for availability left for date and time slot bookings:', 'woocommerce-booking'),
+					__('Message for availability left for date and time slot bookings:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_avail_msg_date_time_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with date and time bookings.', 'woocommerce-booking') )
+					array( __('Availability Message to be displayed in emails for products with date and time bookings.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_availability_msg_multiple_days',
-					__('Message for availability left for multiple day bookings:', 'woocommerce-booking'),
+					__('Message for availability left for multiple day bookings:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_avail_msg_multiple_days_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('Availability Message to be displayed in emails for products with multiple day bookings.', 'woocommerce-booking') )
+					array( __('Availability Message to be displayed in emails for products with multiple day bookings.', 'bkap-send-to-friend') )
 			);
 				
 			add_settings_field(
 					'bkap_friend_button_css',
-					__('Enter the css to be applied to the buttons displayed on the Thank You page and Order emails:', 'woocommerce-booking'),
+					__('Enter the css to be applied to the buttons displayed on the Thank You page and Order emails:', 'bkap-send-to-friend'),
 					array($this, 'bkap_friend_button_css_callback' ),
 					'woocommerce_booking_page',
 					'bkap_friend_settings_section',
-					array( __('The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'woocommerce-booking') )
+					array( __('The css to be applied to the buttons displayed on the Thank You page, Order emails and emails sent to friends.', 'bkap-send-to-friend') )
 			);
 			
 			add_settings_field(
 			         'bkap_friend_tell_friend_page_url',
-			         __('Tell A Friend Address (URL):', 'woocommerce-booking'),
+			         __('Tell A Friend Address (URL):', 'bkap-send-to-friend'),
 			         array($this, 'bkap_friend_tell_friend_page_url_callback' ),
 			         'woocommerce_booking_page',
 			         'bkap_friend_settings_section',
-			         array( __('/?order_id={order_id} . The URL that should be used for the Tell A Friend Page.', 'woocommerce-booking') )
+			         array( __('/?order_id={order_id} . The URL that should be used for the Tell A Friend Page.', 'bkap-send-to-friend') )
 			);
 			
 			// Finally, we register the fields with WordPress
@@ -528,7 +531,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		        $new_input = $input;
 		    } else {
 		        $new_input = 'send-booking-to-friend';
-		        $message = __( 'The Tell A Friend Address (URL) has been set to the default value as it cannot be blank.', 'woocommerce-booking' );
+		        $message = __( 'The Tell A Friend Address (URL) has been set to the default value as it cannot be blank.', 'bkap-send-to-friend' );
 		        add_settings_error( 'bkap_friend_tell_friend_page_url', 'page_url_error', $message, 'updated' );
 		    }
 		    return $new_input;
@@ -649,8 +652,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					}
 					?> 
 					<br>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'woocommerce-booking' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'woocommerce-booking' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'bkap-send-to-friend' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) );?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -849,7 +852,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			if( isset( $_POST['friend_email'] ) ) {
 				if ( trim( $_POST['friend_email'] ) == '' ) {
 					$message = 'Please enter the email address of atleast one friend.';
-					wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
+					wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error');
 					echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
 					die;
 				}
@@ -876,7 +879,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
 								<tr style='background-color:#f4f5f4;'>
 								<th>";
-			$product_table .= __( "Product", 'woocommerce-booking' );
+			$product_table .= __( "Product", 'bkap-send-to-friend' );
 			$product_table .= "</th><td></td>
 								</tr>";
 			$item_count = 0;
@@ -956,14 +959,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$headers .= "Content-Type: text/html"."\r\n";
 				$headers .= "Reply-To:  " . get_option( 'admin_email' ) . " " . "\r\n";
 				// email subject
-				$email_subject = __('Join me at ' . get_option( 'blogname' ), 'woocommerce-booking' );
+				$email_subject = __('Join me at ' . get_option( 'blogname' ), 'bkap-send-to-friend' );
 				// Send the email
 				wp_mail( '', $email_subject, $email_content, $headers );
 				$message = 'Email sent successfully.';
-				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'success');
+				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'success');
 			} else {
 				$message = 'Email could not be sent as all the items have been fully booked.';
-				wc_add_notice( __( $message, 'woocommerce-booking' ), $notice_type = 'error');
+				wc_add_notice( __( $message, 'bkap-send-to-friend' ), $notice_type = 'error');
 			}
 			echo( esc_url_raw( add_query_arg( 'order_id', $_POST['order_id'], $url ) ) );
 			die();

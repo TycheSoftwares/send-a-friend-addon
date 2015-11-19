@@ -10,7 +10,7 @@ $session_obj = new WC_Session_Handler();
 // create an array of all the notices in the session
 $all_notices         = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
-    $success_message = __( 'Email sent successfully.', 'woocommerce-booking' );
+    $success_message = __( 'Email sent successfully.', 'bkap-send-to-friend' );
 	if ( $key == 'success' && $value[0] == $success_message ) {
 		$show_tell_friend = 'none';
 		$show_another_friend = 'block';
@@ -109,7 +109,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	<table style="width:100%;max-width:750px;">
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="client_name"><?php _e( 'Your name', 'woocommerce-booking' );?></label>
+				<label for="client_name"><?php _e( 'Your name', 'bkap-send-to-friend' );?></label>
 			</th>
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="client_name" id="client_name" value="<?php echo $order->billing_first_name . " " . $order->billing_last_name; ?>">
@@ -117,7 +117,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 		</tr>
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="client_email"><?php _e( 'Your email', 'woocommerce-booking' );?></label>
+				<label for="client_email"><?php _e( 'Your email', 'bkap-send-to-friend' );?></label>
 			</th>
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="client_email" id="client_email" value="<?php echo $order->billing_email; ?>">
@@ -125,7 +125,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 		</tr>
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="friend_email"><?php _e( 'Their email', 'woocommerce-booking' );?></label>
+				<label for="friend_email"><?php _e( 'Their email', 'bkap-send-to-friend' );?></label>
 			</th>
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="friend_email" id="friend_email" >
@@ -135,14 +135,14 @@ if ( isset( $session_status ) && $session_status == true ) {
 		</tr>
 		<tr>
 			<th style="vertical-align:top;">
-				<label for="email_message"><?php _e( 'Personalized Message (optional)', 'woocommerce-booking' );?></label>
+				<label for="email_message"><?php _e( 'Personalized Message (optional)', 'bkap-send-to-friend' );?></label>
 			</th>
 			<td>
 				<textarea style="width:100%;max-width:400px;" name="email_message" id="email_message"></textarea>
 			</td>
 		</tr>
 	</table>
-	<input type="button" class="button" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'woocommerce-booking' ); ?>" onclick="bkap_send_email(<?php echo $_GET['order_id'];?>)" />
+	<input type="button" class="button" id="send_friend" name="send_friend" value="<?php _e( 'SEND TO A FRIEND', 'bkap-send-to-friend' ); ?>" onclick="bkap_send_email(<?php echo $_GET['order_id'];?>)" />
 	 
 	<script type="text/javascript">
 		function bkap_send_email( id ) {
@@ -206,9 +206,9 @@ if ( isset( $session_status ) && $session_status == true ) {
 	
 	}
 	?>
-	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( 'order_id', $_GET['order_id'], $url ) ); ?>');" />
+	<input type="button" class="button" id="send_another_friend" name="send_another_friend" value="<?php _e( 'SEND TO ANOTHER FRIEND', 'bkap-send-to-friend' ); ?>" onclick="window.location.replace('<?php echo esc_url_raw( add_query_arg( 'order_id', $_GET['order_id'], $url ) ); ?>');" />
 	<br><br>
-	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'woocommerce-booking' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
+	<input type="button" class="button" id="return_shop" name="return_shop" value="<?php _e( 'RETURN TO SHOP', 'bkap-send-to-friend' ); ?>" onclick="window.location.replace('<?php echo esc_url( add_query_arg('post_type','product',home_url( '/' )));?>');" />
 	<p></p>
 </div>
 </div>
