@@ -14,7 +14,7 @@ load_plugin_textdomain( 'bkap-send-to-friend', false, dirname( plugin_basename( 
 include_once( dirname( __FILE__ ) . '/bkap_tell_a_friend_page.php' );
 
 function is_bkap_send_friend_active() {
-	if ( is_plugin_active( 'bkap-send-to-friend/send_to_friend.php' ) ) {
+	if ( is_plugin_active( 'bkap-send-to-friend/bkap-send-to-friend.php' ) ) {
 		return true;
 	} else {
 		return false;
