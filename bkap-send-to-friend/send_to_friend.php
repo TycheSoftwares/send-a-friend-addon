@@ -325,6 +325,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_enable_friend_callback( $args ) {
+			
 			// First, we read the option
 			$enable_send_a_friend = get_option( 'bkap_friend_enable_send_a_friend' );
 			// This condition added to avoid the notice displyed while Check box is unchecked.
@@ -336,6 +337,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<input type="checkbox" id="bkap_friend_enable_send_a_friend" name="bkap_friend_enable_send_a_friend" value="on" ' . checked( 'on', $enable_send_a_friend, false ) . '/>';
 			// Here, we'll take the first argument of the array and add it to a label next to the checkbox
 			$html .= '<label for="bkap_friend_enable_send_a_friend"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -346,6 +348,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_enable_admin_cc_callback( $args ) {
+			
 			// First, we read the option
 			$enable_admin_cc = get_option( 'bkap_friend_enable_admin_cc' );
 			// This condition added to avoid the notice displyed while Check box is unchecked.
@@ -357,6 +360,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<input type="checkbox" id="bkap_friend_enable_admin_cc" name="bkap_friend_enable_admin_cc" value="on" ' . checked( 'on', $enable_admin_cc, false ) . '/>';
 			// Here, we'll take the first argument of the array and add it to a label next to the checkbox
 			$html .= '<label for="bkap_friend_enable_admin_cc"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -367,6 +371,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_book_another_button_text_callback( $args ) {
+			
 			// First, we read the option
 			$book_another_space_button = get_option( 'bkap_friend_book_another_button_text' );
 			// This condition added to avoid the notice displyed when no text is set.
@@ -378,6 +383,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<input type="text" id="bkap_friend_book_another_button_text" name="bkap_friend_book_another_button_text" value="' . $book_another_space_button . '"/>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_book_another_button_text"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -388,6 +394,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_send_friend_button_text_callback( $args ) {
+			
 			// First, we read the option
 			$send_friend_button = get_option( 'bkap_friend_send_friend_button_text' );
 			// This condition added to avoid the notice displyed when no text is set
@@ -399,6 +406,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<input type="text" id="bkap_friend_send_friend_button_text" name="bkap_friend_send_friend_button_text" value="' . $send_friend_button . '"/>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_send_friend_button_text"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -409,6 +417,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_email_button_text_callback( $args ) {
+			
 			// First, we read the option
 			$email_button_text = get_option( 'bkap_friend_email_button_text' );
 			// This condition added to avoid the notice displyed when no text is set
@@ -420,6 +429,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<input type="text" id="bkap_friend_email_button_text" name="bkap_friend_email_button_text" value="' . $email_button_text . '"/>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_email_button_text"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -430,6 +440,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_avail_msg_single_days_callback( $args ) {
+			
 			// First, we read the option
 			$available_msg_single_days = stripslashes( get_option( 'bkap_friend_availability_msg_single_days' ) );
 			// This condition added to avoid the notice displyed when no text is set
@@ -441,6 +452,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_single_days" name="bkap_friend_availability_msg_single_days" style="width:250px;">' . $available_msg_single_days . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_single_days"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -451,6 +463,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_avail_msg_date_time_callback( $args ) {
+			
 			// First, we read the option
 			$available_msg_date_time = stripslashes( get_option( 'bkap_friend_availability_msg_date_time' ) );
 			// This condition added to avoid the notice displyed when no text is set
@@ -462,6 +475,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_date_time" name="bkap_friend_availability_msg_date_time" style="width:250px;">' . $available_msg_date_time . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_date_time"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -472,6 +486,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_avail_msg_multiple_days_callback( $args ) {
+			
 			// First, we read the option
 			$available_msg_multiple_days = stripslashes( get_option( 'bkap_friend_availability_msg_multiple_days' ) );
 			// This condition added to avoid the notice displyed when no text is set
@@ -483,6 +498,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<textarea rows="3" cols="60" id="bkap_friend_availability_msg_multiple_days" name="bkap_friend_availability_msg_multiple_days" style="width:250px;">' . $available_msg_multiple_days . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_availability_msg_multiple_days"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -493,6 +509,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_button_css_callback( $args ) {
+			
 			// First, we read the option
 			$button_css = stripslashes( get_option( 'bkap_friend_button_css' ) );
 			// This condition added to avoid the notice displyed when no text is set
@@ -504,6 +521,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$html = '<textarea rows="4" cols="60" id="bkap_friend_button_css" name="bkap_friend_button_css" style="width:600px;">' . $button_css . '</textarea>';
 			// Here, we'll take the first argument of the array and add it to a label next to the field
 			$html .= '<label for="bkap_friend_button_css"> '  . $args[0] . '</label>';
+			
 			echo $html;
 		}
 		
@@ -514,6 +532,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_tell_friend_page_url_callback( $args ) {
+		    
 		    // First, we read the option
 		    $tell_a_friend_page_url = stripslashes( get_option( 'bkap_friend_tell_friend_page_url' ) );
 		    // This condition added to avoid the notice displayed when no text is set
@@ -525,6 +544,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    $html = '<input type="text" id="bkap_friend_tell_friend_page_url" name="bkap_friend_tell_friend_page_url" value="' . $tell_a_friend_page_url . '"/>';
 		    // Here, we'll take the first argument of the array and add it to a label next to the field
 		    $html .= '<label for="bkap_friend_tell_friend_page_url"> '  . $args[0] . '</label>';
+		    
 		    echo $html;
 		}
 		
@@ -535,6 +555,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */
 		function bkap_friend_tell_friend_page_url_save_callback( $input ) {
+		    
 		    if ( isset( $input ) && '' != $input ) {
 		        $new_input = $input;
 		    } else {
@@ -542,6 +563,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		        $message = __( 'The Tell A Friend Address (URL) has been set to the default value as it cannot be blank.', 'bkap-send-to-friend' );
 		        add_settings_error( 'bkap_friend_tell_friend_page_url', 'page_url_error', $message, 'updated' );
 		    }
+		    
 		    return $new_input;
 		}
 		
@@ -690,7 +712,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 			// Get all the booking details
 			$product_date = $booking_date;
-			$product_checkout_date = $product_from_time = $product_to_time = '';
+			$product_checkout_date = '';
+			$product_from_time = '';
+			$product_to_time = '';
 			if ( isset( $checkout_date ) && '' != $checkout_date ) {
 				$product_checkout_date = $checkout_date;
 			}
@@ -781,8 +805,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * 
 		 * the content passed to that page is of the view file 'request-friend.php'
 		 * that content is loaded in a variable using output buffering functions - ob_start, ob_get_contents, ob_end_clean
-		 * @since 1.0
 		 * creates new page object & adds to $posts array in bkap_tell_a_friend_page()
+		 * 
+		 * @since 1.0
 		 */
 		function load_tell_a_friend_page() {
 
@@ -822,13 +847,16 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		 * @since 1.0
 		 */ 
 		function bkap_send_email_to_friend() {	    
+		    
 		    // create the tell a friend page url to return back once the email is sent
 		    $url = '';
 		    $permalink_structure = get_option( 'permalink_structure' );
+		    
 		    $current_time = current_time( 'timestamp' );
 		    $year = date( 'Y', $current_time );
 		    $month = date( 'm', $current_time );
 		    $day = date( 'd', $current_time );
+		    
 		    $tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
 		    if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || ! isset( $tell_friend_page_url ) ) {
 		        $tell_friend_page_url = 'send-booking-to-friend';
@@ -869,9 +897,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 			// get the addon settings
 			$enable_admin_cc = get_option( 'bkap_friend_enable_admin_cc' );
+			
 			// get the order object
 			$order = new WC_Order( $_POST[ 'order_id' ] );
 			$items = $order->get_items();
+			
 			//products selected by client
 			$products = explode( ',', $_POST[ 'details' ] );
 			
@@ -1081,6 +1111,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					$booking_details[ '_wapbk_checkout_date' ] = wc_get_order_item_meta( $item_id, '_wapbk_checkout_date' );
 					$booking_details[ '_wapbk_time_slot' ] = wc_get_order_item_meta( $item_id, '_wapbk_time_slot' );
 					
+					$variation_id = '';
+					$display_date = '';
 					if ( isset( $booking_details[ '_variation_id' ] ) && 0 != $booking_details[ '_variation_id' ] ) {
 						$attribute_array = array();
 						$attr = wc_get_product_variation_attributes( $booking_details[ '_variation_id' ] );
@@ -1102,8 +1134,12 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$date_format_set = $date_formats[$global_settings->booking_date_format];
 						$display_date = date ( $date_format_set, strtotime( $booking_date ) );
 					}
-					$checkout_date = $booking_time = $display_time = $fixed_block_name = '';
+					
+					$checkout_date = '';
 					$hidden_date_checkout = '';
+					$booking_time = '';
+					$display_time = '';
+					$fixed_block_name = '';
 					
 					// if multiple days is enabled, fetch the checkout date
 					if ( isset( $booking_settings[ 'booking_enable_multiple_day' ] ) && 'on' == $booking_settings[ 'booking_enable_multiple_day' ] ) {
@@ -1172,7 +1208,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					}
 					
 					$current_time = current_time( 'timestamp' );
-					$past_date = $past_time = 1; // means its a future date and time
+					$past_date = 1; // means its a future date
+					$past_time = 1; // means its a future time
 					if ( isset( $current_time ) && isset( $date_timestamp ) ) {
 						if ( $date_timestamp < $current_time ) {
 							$past_time = 0; // means the booking date and time hv already passed
@@ -1201,6 +1238,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								<?php 
 							} 
 							?>
+
 							// Populate the Booking date
 							jQuery( "#wapbk_hidden_date" ).val( '<?php echo $hidden_date; ?>' );
 							var split = jQuery( "#wapbk_hidden_date" ).val().split( "-" );
@@ -1248,6 +1286,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 										// Pre-populate the time slots with the order time slots
 										jQuery( "#time_slot" ).val( '<?php echo $display_time; ?>' );
 										var time_slot_value = jQuery( "#time_slot" ).val();
+
 										// Availability display for the time slot selected if setting is enabled			
 										if ( "undefined" != typeof time_slot_value && "yes" == jQuery( "#wapbk_availability_display" ).val() ) {
 											var data = {
@@ -1277,14 +1316,17 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		                                    jQuery( ".payment_type" ).hide();
 											jQuery( ".partial_message" ).hide();
 										}
+
 										// This is called to ensure the variable pricing for time slots is displayed
 										bkap_single_day_price();
+
 										// This is called to create the change event for the time slot drop down
 										bkap_time_slot_events();
 									<?php 
 									}?>
 								});
 							} else {
+
 								// check if multiple day is enabled, if yes then pre-populate the end date
 								if ( jQuery( "#booking_calender_checkout" ).length ) {
 
@@ -1317,9 +1359,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								} else {
 									jQuery( ".single_add_to_cart_button" ).show();
 									jQuery( ".quantity" ).show();
+
 									// This is called to ensure the special pricing for days/dates is displayed
 									bkap_single_day_price();
 								}
+
 								// Availability Display for the date selected only if setting is enabled
 								if ( "yes" == jQuery( "#wapbk_availability_display" ).val() ) {
 									var data = {

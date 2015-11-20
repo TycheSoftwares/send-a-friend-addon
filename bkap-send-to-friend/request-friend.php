@@ -10,7 +10,7 @@ $show_another_friend = 'none';
 $session_obj = new WC_Session_Handler();
 
 // create an array of all the notices in the session
-$all_notices         = WC()->session->get( 'wc_notices', array() );
+$all_notices = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
     $success_message = __( 'Email sent successfully.', 'bkap-send-to-friend' );
 	if ( 'success' == $key && $value[0] == $success_message ) {
@@ -53,7 +53,8 @@ if ( isset( $session_status ) && true == $session_status ) {
 		if ( isset( $booking_settings[ 'booking_enable_date' ] ) && 'on' == $booking_settings[ 'booking_enable_date' ] ) {
 			// Get the date and time slot label
 			$booking_date = $value[ 'wapbk_booking_date' ];
-			$checkout_date = $booking_time = '';
+			$checkout_date = '';
+			$booking_time = '';
 			if ( isset( $value[ 'wapbk_checkout_date' ] ) ) {
 				$checkout_date = $value[ 'wapbk_checkout_date' ];
 			}
