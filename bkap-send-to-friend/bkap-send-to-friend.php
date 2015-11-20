@@ -825,8 +825,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				
 				ob_start();
 				$templatefilename = 'request-friend.php';
-				if ( file_exists( dirname( __FILE__ ) . $templatefilename ) ) {
-					$template = dirname( __FILE__ ) . $templatefilename;
+				if ( file_exists( dirname( __FILE__ ) . '/' . $templatefilename ) ) {
+					$template = dirname( __FILE__ ) . '/' . $templatefilename;
 					include( $template );
 				}
 				$content = ob_get_contents();
