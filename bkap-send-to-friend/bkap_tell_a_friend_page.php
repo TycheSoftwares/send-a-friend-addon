@@ -32,7 +32,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 
 			$url = '';
 			$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-			if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
+			if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || !isset( $tell_friend_page_url ) ) {
 			    $tell_friend_page_url = 'send-booking-to-friend';
 			}
 				
@@ -40,7 +40,7 @@ if ( !class_exists( 'bkap_tell_a_friend_page' ) ) {
 			if ( preg_match( $page_url_setting, $wp->request ) ) {
 			    $url = 'send-booking-to-friend';
 			}
-			if( $url != '' && ( strcasecmp($url, $this->slug) == 0 || $wp->query_vars[ 'page_id' ] == $this->slug ) ) {
+			if( '' != $url && ( 0 == strcasecmp( $url, $this->slug ) || $wp->query_vars[ 'page_id' ] == $this->slug ) ) {
 				
 				//create a fake post intance
 				$post = new stdClass;

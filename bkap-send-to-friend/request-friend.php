@@ -13,7 +13,7 @@ $session_obj = new WC_Session_Handler();
 $all_notices         = WC()->session->get( 'wc_notices', array() );
 foreach( $all_notices as $key => $value ) {
     $success_message = __( 'Email sent successfully.', 'bkap-send-to-friend' );
-	if ( $key == 'success' && $value[0] == $success_message ) {
+	if ( 'success' == $key && $value[0] == $success_message ) {
 		$show_tell_friend = 'none';
 		$show_another_friend = 'block';
 		// if it's a guest user
@@ -27,7 +27,7 @@ wc_print_notices();
 
 // check if a session exists
 $session_status = $session_obj->has_session();
-if ( isset( $session_status ) && $session_status == true ) {
+if ( isset( $session_status ) && true == $session_status ) {
 } else {
     // if not, create one, so the notices can be added and displayed
     $session_obj->set_customer_session_cookie( true );
@@ -50,7 +50,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 		$product_id = $value[ 'product_id' ];
 		// Booking Settings
 		$booking_settings = get_post_meta( $product_id, 'woocommerce_booking_settings', true );
-		if ( isset( $booking_settings[ 'booking_enable_date' ] ) && $booking_settings[ 'booking_enable_date' ] == 'on' ) {
+		if ( isset( $booking_settings[ 'booking_enable_date' ] ) && 'on' == $booking_settings[ 'booking_enable_date' ] ) {
 			// Get the date and time slot label
 			$booking_date = $value[ 'wapbk_booking_date' ];
 			$checkout_date = $booking_time = '';
@@ -65,10 +65,10 @@ if ( isset( $session_status ) && $session_status == true ) {
 			$display = 'NO';
 			if ( $availability > 0 ) {
 				$display = 'YES';
-			} else if ( $availability === "Unlimited" ) {
+			} else if ( "Unlimited" === $availability ) {
 				$display = 'YES';
 			}
-			if ( $display == "YES" ) {
+			if ( "YES" == $display ) {
 			    // Add the product to the list of selected products as the checkoboxes are selected by default
 			    $product_list .= $product_id . ',';
 				echo '<input class="bkap_product_select" type="checkbox" id="product_' . $value["product_id"] . '" name="product_' . $value["product_id"] . '" checked onClick="add_product(' . $value["product_id"] . ')">';
@@ -100,7 +100,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 			var final_list = first_set + second_set;
 			jQuery( "#selected_products" ).val( final_list );
 		}
-		if ( jQuery( "#selected_products" ).val() == '' ) {
+		if ( '' == jQuery( "#selected_products" ).val() ) {
 			jQuery( '#send_friend' ).prop( 'disabled', true ).css( 'cursor', 'default' );
 		} else {
 			jQuery( '#send_friend' ).prop( 'disabled', false ).css( 'cursor', 'pointer' );
@@ -181,7 +181,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	$month = date( 'm', $current_time );
 	$day = date( 'd', $current_time );
 	$tell_friend_page_url = get_option( 'bkap_friend_tell_friend_page_url' );
-	if( ( isset( $tell_friend_page_url ) && $tell_friend_page_url == '' ) || !isset( $tell_friend_page_url ) ) {
+	if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || ! isset( $tell_friend_page_url ) ) {
 	    $tell_friend_page_url = 'send-booking-to-friend';
 	}
 	switch ( $permalink_structure ) {
@@ -199,7 +199,7 @@ if ( isset( $session_status ) && $session_status == true ) {
 	        $last_char = substr( $custom_link, -1 );
 	        $url = home_url() . $permalink_structure;
 	
-	        if ( $last_char == '/' ) {
+	        if ( '/' == $last_char ) {
 	            $url .= $tell_friend_page_url . '/';
 	        } else {
 	            $url .= '/' . $tell_friend_page_url . '/';
