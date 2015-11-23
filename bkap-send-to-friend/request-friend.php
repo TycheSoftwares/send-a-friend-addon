@@ -185,20 +185,25 @@ if ( isset( $session_status ) && true == $session_status ) {
 	if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || ! isset( $tell_friend_page_url ) ) {
 	    $tell_friend_page_url = 'send-booking-to-friend';
 	}
+	if ( function_exists('icl_object_id') ) {
+	    $url = apply_filters( 'wpml_home_url', home_url() );
+	} else {
+	    $url = home_url( '/' );
+	}
 	switch ( $permalink_structure ) {
 	    case '/%year%/%monthnum%/%day%/%postname%/':
-	        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
+	        $url .= $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
 	        break;
 	    case '/%year%/%monthnum%/%postname%/':
-	        $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+	        $url .= $year . '/' . $month . '/' . $tell_friend_page_url . '/';
 	        break;
 	    case '/%postname%/':
-	        $url = home_url( '/' ) . $tell_friend_page_url .'/';
+	        $url .= $tell_friend_page_url . '/';
 	        break;
 	    default:
 	        $custom_link = trim( $permalink_structure );
 	        $last_char = substr( $custom_link, -1 );
-	        $url = home_url() . $permalink_structure;
+	        $url .= $permalink_structure;
 	
 	        if ( '/' == $last_char ) {
 	            $url .= $tell_friend_page_url . '/';

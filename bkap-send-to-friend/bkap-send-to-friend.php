@@ -659,20 +659,27 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || ! isset( $tell_friend_page_url ) ) {
 					    $tell_friend_page_url = 'send-booking-to-friend';
 					}
+					if ( function_exists('icl_object_id') ) {
+					    $url = apply_filters( 'wpml_home_url', home_url() );
+					    $product_id_to_link = icl_object_id( $product_id, 'post', true );
+					} else {
+					    $url = home_url( '/' );
+					    $product_id_to_link = $product_id;
+					}
 					switch ( $permalink_structure ) {
 					    case '/%year%/%monthnum%/%day%/%postname%/': 
-					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/'; 
+					        $url .= $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
 					        break;
 					    case '/%year%/%monthnum%/%postname%/':
-					        $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+					        $url .= $year . '/' . $month . '/' . $tell_friend_page_url . '/';
 					        break;
 					    case '/%postname%/':
-					        $url = home_url( '/' ) . $tell_friend_page_url . '/';
-					        break;
-					    default:
-					        $custom_link = trim( $permalink_structure );
-					        $last_char = substr( $custom_link, -1 );
-					        $url = home_url() . $permalink_structure;
+					        $url .= $tell_friend_page_url . '/';
+                            break;
+                        default:
+                            $custom_link = trim( $permalink_structure );
+                            $last_char = substr( $custom_link, -1 );
+                            $url .= $permalink_structure;
 					      
 					        if ( '/' == $last_char ) {
 					            $url .= $tell_friend_page_url . '/';
@@ -684,7 +691,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					}
 					?> 
 					<br>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'bkap-send-to-friend' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id_to_link ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'bkap-send-to-friend' ); ?></a>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
 				<?php 	 
 				}
@@ -861,21 +868,26 @@ if ( !class_exists( 'send_to_friend' ) ) {
 		    if( ( isset( $tell_friend_page_url ) && '' == $tell_friend_page_url ) || ! isset( $tell_friend_page_url ) ) {
 		        $tell_friend_page_url = 'send-booking-to-friend';
 		    }
+		    if ( function_exists('icl_object_id') ) {
+		        $url = apply_filters( 'wpml_home_url', home_url() );
+		    } else {
+		        $url = home_url( '/' );
+		    }
 		    switch ( $permalink_structure ) {
 		        case '/%year%/%monthnum%/%day%/%postname%/':
-		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
+		            $url .= $year . '/' . $month . '/' . $day . '/' . $tell_friend_page_url . '/';
 		            break;
 		        case '/%year%/%monthnum%/%postname%/':
-		            $url = home_url( '/' ) . $year . '/' . $month . '/' . $tell_friend_page_url . '/';
+		            $url .= $year . '/' . $month . '/' . $tell_friend_page_url . '/';
 		            break;
 		        case '/%postname%/':
-		            $url = home_url( '/' ) . $tell_friend_page_url . '/';
+		            $url .= $tell_friend_page_url . '/';
 		            break;
 		        default:
 		            $custom_link = trim( $permalink_structure );
 		            $last_char = substr( $custom_link, -1 );
-		            $url = home_url() . $permalink_structure;
-		             
+		            $url .= $permalink_structure;
+		            
 		            if ( '/' == $last_char ) {
 		                $url .= $tell_friend_page_url . '/';
 		            } else {
@@ -929,9 +941,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			foreach ( $items as $key => $value ) {		
 				// Add the product in the table only if it has been selected by the client on the 'Tell a Friend' Page
 				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value[ 'product_id' ], $products ) ) {
-					
+					// Get the product ID for a multi language site
+				    if ( function_exists('icl_object_id') ) {
+				        $product_id_to_link = icl_object_id( $product_id, 'post', true );
+				    } else {
+				        $product_id_to_link = $product_id;
+				    }
 					// Add order Id to product link
-					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $value[ 'product_id' ] ) ) );
+					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $product_id_to_link ) ) );
 					// Add the product name, booking details
 					$booking_date = $value[ 'wapbk_booking_date' ];
 					$checkout_date = $time_slot = '';
