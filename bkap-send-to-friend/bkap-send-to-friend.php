@@ -617,7 +617,10 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			if ( isset( $booking_settings ) && 'on' == $booking_settings[ 'booking_enable_date' ] && isset( $enable_send_a_friend ) && 'on' == $enable_send_a_friend ) {
 				
 				// Get the booking details
-				$booking_date = $item[ 'wapbk_booking_date' ];
+				$booking_date = '';
+				if ( isset( $item[ 'wapbk_booking_date' ] ) ) {
+				    $booking_date = $item[ 'wapbk_booking_date' ];
+				}
 				$checkout_date = $booking_time = '';
 				if ( isset( $item[ 'wapbk_checkout_date' ] ) ) {
 					$checkout_date = $item[ 'wapbk_checkout_date' ];
