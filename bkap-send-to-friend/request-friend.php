@@ -61,8 +61,16 @@ if ( isset( $session_status ) && true == $session_status ) {
 			if ( isset( $value[ 'wapbk_time_slot' ] ) ) {
 				$booking_time = $value[ 'wapbk_time_slot' ];
 			}
+			// If WPML is enabled, the make sure that the base language product ID is used to calculate the availability
+			if ( function_exists( 'icl_object_id' ) ) {
+			    global $sitepress;
+			    $default_lang = $sitepress->get_default_language();
+			    $base_product_id = icl_object_id( $product_id, 'product', false, $default_lang );
+			} else {
+			    $base_product_id = $product_id;
+			}
 			// Get the availability for the product
-			$availability = send_to_friend::get_availability( $product_id, $booking_date, $checkout_date, $booking_time );
+			$availability = send_to_friend::get_availability( $base_product_id, $booking_date, $checkout_date, $booking_time );
 			$display = 'NO';
 			if ( $availability > 0 ) {
 				$display = 'YES';
@@ -72,8 +80,8 @@ if ( isset( $session_status ) && true == $session_status ) {
 			if ( "YES" == $display ) {
 			    // Add the product to the list of selected products as the checkoboxes are selected by default
 			    $product_list .= $product_id . ',';
-				echo '<input class="bkap_product_select" type="checkbox" id="product_' . $value["product_id"] . '" name="product_' . $value["product_id"] . '" checked onClick="add_product(' . $value["product_id"] . ')">';
-				echo '&nbsp;&nbsp;<a href="' . get_permalink( $value["product_id"]) . '">' . $value["name"] . '</a><br>';
+				echo '<input class="bkap_product_select" type="checkbox" id="product_' . $value[ "product_id" ] . '" name="product_' . $value[ "product_id" ] . '" checked onClick="add_product(' . $value[ "product_id" ] . ')">';
+				echo '&nbsp;&nbsp;<a href="' . get_permalink( $value[ "product_id" ]) . '">' . $value[ "name" ] . '</a><br>';
 			}
 		}
 	}

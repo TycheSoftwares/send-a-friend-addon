@@ -625,9 +625,16 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				if ( isset( $item[ 'wapbk_time_slot' ] ) ) {
 					$booking_time = $item[ 'wapbk_time_slot' ];
 				}
-				
+				// If WPML is enabled, the make sure that the base language product ID is used to calculate the availability
+				if ( function_exists( 'icl_object_id' ) ) {
+				    global $sitepress;
+				    $default_lang = $sitepress->get_default_language();
+				    $base_product_id = icl_object_id( $product_id, 'product', false, $default_lang );
+				} else {
+				    $base_product_id = $product_id;
+				}
 				// Get the availability for the product
-				$availability = $this->get_availability( $product_id, $booking_date, $checkout_date, $booking_time );
+				$availability = $this->get_availability( $base_product_id, $booking_date, $checkout_date, $booking_time );
 				
 				$display = 'NO';
 				if ( $availability > 0 ) {
@@ -943,9 +950,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				if ( is_array( $products ) && count( $products ) > 0 && in_array( $value[ 'product_id' ], $products ) ) {
 					// Get the product ID for a multi language site
 				    if ( function_exists('icl_object_id') ) {
-				        $product_id_to_link = icl_object_id( $product_id, 'post', true );
+				        $product_id_to_link = icl_object_id( $value[ 'product_id' ], 'post', true );
 				    } else {
-				        $product_id_to_link = $product_id;
+				        $product_id_to_link = $value[ 'product_id' ];
 				    }
 					// Add order Id to product link
 					$button_link = esc_url_raw( add_query_arg( 'item_id', $key, get_permalink( $product_id_to_link ) ) );
@@ -958,9 +965,16 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					if ( isset( $value[ 'wapbk_time_slot' ] ) ) {
 						$time_slot = $value[ 'wapbk_time_slot' ];
 					}
-					
+					// WPML is enabled, then get the base language product ID to calculate availability
+					if ( function_exists('icl_object_id') ) {
+					    global $sitepress;
+					    $default_lang = $sitepress->get_default_language();
+					    $base_product_id = icl_object_id( $value[ 'product_id' ], 'product', false, $default_lang );
+					} else {
+					    $base_product_id = $value[ 'product_id' ];
+					}
 					// Get the availability for the product
-					$availability = $this->get_availability( $value[ 'product_id' ], $booking_date, $checkout_date, $time_slot );
+					$availability = $this->get_availability( $base_product_id, $booking_date, $checkout_date, $time_slot );
 						
 					$display = 'NO';
 					if ( $availability > 0 ) {
@@ -1065,7 +1079,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			
 			// If the item ID is present, it means the booking data needs to be pre-populated
 			if ( isset( $_GET[ 'item_id' ] ) && '' != $_GET[ 'item_id' ] ) {
-				$duplicate_of = bkap_common::bkap_get_product_id( $post->ID );
+			    // If WPML is enabled, the make sure that the base language product ID is used to calculate the availability
+			    if ( function_exists( 'icl_object_id' ) ) {
+			        global $sitepress;
+			        $default_lang = $sitepress->get_default_language();
+			        $duplicate_of = icl_object_id( $post->ID, 'product', false, $default_lang );
+			    } else {
+			        $duplicate_of = $post->ID;
+			    }
 				$item_id = $_GET[ 'item_id' ];
 
 				// default fields
