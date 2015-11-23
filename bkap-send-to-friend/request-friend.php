@@ -96,8 +96,8 @@ if ( isset( $session_status ) && true == $session_status ) {
 			}
 			//get the second half
 			var remaining_str = already_selected.substr( start_pos );
-			var seperator_pos = remaining_str.indexOf( ',' );
-			var second_set = remaining_str.substr( seperator_pos + 1 );
+			var separator_pos = remaining_str.indexOf( ',' );
+			var second_set = remaining_str.substr( separator_pos + 1 );
 			var final_list = first_set + second_set;
 			jQuery( "#selected_products" ).val( final_list );
 		}
@@ -134,7 +134,7 @@ if ( isset( $session_status ) && true == $session_status ) {
 			<td>
 				<input type="text" style="width:100%;max-width:400px;" name="friend_email" id="friend_email" >
 				<br>
-				<?php _e( '(If more than one, seperate using commas)', 'bkap-send-to-friend' ); ?>
+				<?php _e( '(If more than one, separate using commas)', 'bkap-send-to-friend' ); ?>
 			</td>
 		</tr>
 		<tr>
