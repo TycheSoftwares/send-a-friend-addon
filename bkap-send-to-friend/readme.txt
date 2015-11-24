@@ -24,7 +24,7 @@ This WordPress plugin extends the Woocommerce Booking and Appointment Plugin by 
 [woocommercebookingappointmentplugin tychesoftwares]: https://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin
 	"Woocommerce Booking & Appointment Plugin" 	This plugin requires the <a href="https://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin/">Woocommerce Booking and Appointment Plugin</a>. <strong>Don't use Woocommerce Booking and Appointment Plugin? <a href="https://www.tychesoftwares.com/store/premium-plugins/woocommerce-booking-plugin/">Buy the plugin</a></strong> and start using this revolutionary plugin!
 
-> 	This addon for the Woocommerce Booking and Appointment plugin allows users to invite their friends to join them for various types of bookings that are made through the plugin.*The friends can just click on those links & thereby open the product page which is pre-loaded with the booking details which their friends have scheduled bookings for.*Thus the addon provides the ability to share bookings with anyone via email & as a result, it leads to an increase in your bookings.*	
+> 	This addon for the Woocommerce Booking and Appointment plugin allows users to invite their friends to join them for various types of bookings that are made through the plugin.* The friends can just click on those links & thereby open the product page which is pre-loaded with the booking details which their friends have scheduled bookings for.* Thus the addon provides the ability to share bookings with anyone via email & as a result, it leads to an increase in your bookings.*	
 
 == Installation ==
 
