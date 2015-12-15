@@ -14,7 +14,7 @@ load_plugin_textdomain( 'bkap-send-to-friend', false, dirname( plugin_basename( 
 include_once( dirname( __FILE__ ) . '/bkap_tell_a_friend_page.php' );
 
 function is_bkap_send_friend_active() {
-	if ( is_plugin_active( 'bkap-send-to-friend/bkap-send-to-friend.php' ) ) {
+	if ( is_plugin_active( 'send-booking-invites-to-friends/bkap-send-to-friend.php' ) ) {
 		return true;
 	} else {
 		return false;
@@ -935,11 +935,16 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$email_content = str_replace( '{{client_name}}', $_POST[ 'client_name' ], $email_content );
 			// site name
 			$email_content = str_replace( '{{site_name}}', get_option( 'blogname' ), $email_content );
-			// get the booking date and time labels, so they can be used to retrieve data
+			// get the booking date and time labels, so they can be used for display
 			$booking_date_label = get_option( 'book.date-label' );
 			$booking_time_label = get_option( 'book.time-label' );
 			$checkout_date_label = trim( strip_tags( get_option( 'checkout.date-label' ) ) );
 			
+			// get the booking date and time labels, so they can be used to retrieve data
+			$booking_meta_label = get_option( 'book.item-meta-date' );
+			$booking_time_meta_label = get_option( 'book.item-meta-time' );
+			$checkout_meta_label = trim( strip_tags( get_option( 'checkout.item-meta-date' ) ) );
+				
 			// Product table
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
 								<tr style='background-color:#f4f5f4;'>
@@ -991,14 +996,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 										<td>";
 						$product_table .= "<a href='" . $button_link . "'>" . $value[ 'name' ] . "</a><br>";
 						$product_table .= "<b>" . $booking_date_label . ":</b><br>".
-											$value[$booking_date_label];
-						if ( isset( $value[$checkout_date_label] ) ) {
+											$value[ $booking_meta_label ];
+						if ( isset( $value[ $checkout_meta_label ] ) ) {
 							$product_table .= "<br><b>" . $checkout_date_label . ":</b><br>".
-									$value[$checkout_date_label];
+									$value[ $checkout_meta_label ];
 						}
-						if ( isset( $value[$booking_time_label] ) ) {
+						if ( isset( $value[ $booking_time_meta_label ] ) ) {
 							$product_table .= "<br><b>" . $booking_time_label . ":</b><br>".
-									$value[$booking_time_label];
+									$value[ $booking_time_meta_label ];
 						}
 						$product_table .= '</td>';
 						
