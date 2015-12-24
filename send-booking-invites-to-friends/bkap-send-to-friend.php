@@ -935,10 +935,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$email_content = str_replace( '{{client_name}}', $_POST[ 'client_name' ], $email_content );
 			// site name
 			$email_content = str_replace( '{{site_name}}', get_option( 'blogname' ), $email_content );
-			// get the booking date and time labels, so they can be used for display
-			$booking_date_label = get_option( 'book.date-label' );
-			$booking_time_label = get_option( 'book.time-label' );
-			$checkout_date_label = trim( strip_tags( get_option( 'checkout.date-label' ) ) );
 			
 			// get the booking date and time labels, so they can be used to retrieve data
 			$booking_meta_label = get_option( 'book.item-meta-date' );
@@ -995,14 +991,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						$product_table .= "<tr>
 										<td>";
 						$product_table .= "<a href='" . $button_link . "'>" . $value[ 'name' ] . "</a><br>";
-						$product_table .= "<b>" . $booking_date_label . ":</b><br>".
+						$product_table .= "<b>" . $booking_meta_label . ":</b><br>".
 											$value[ $booking_meta_label ];
 						if ( isset( $value[ $checkout_meta_label ] ) ) {
-							$product_table .= "<br><b>" . $checkout_date_label . ":</b><br>".
+							$product_table .= "<br><b>" . $checkout_meta_label . ":</b><br>".
 									$value[ $checkout_meta_label ];
 						}
 						if ( isset( $value[ $booking_time_meta_label ] ) ) {
-							$product_table .= "<br><b>" . $booking_time_label . ":</b><br>".
+							$product_table .= "<br><b>" . $booking_time_meta_label . ":</b><br>".
 									$value[ $booking_time_meta_label ];
 						}
 						$product_table .= '</td>';
