@@ -43,5 +43,8 @@ Thus the addon provides the ability to share bookings with anyone via email & as
 
 == Changelog ==
 
+= 1.1 =
+* When the Booking labels used on Product page differ from the ones used on the Order Received page and email notifications, the addon was passing the booking details as blanks in emails sent to friends. This has been fixed.
+
 = 1.0 =
 * Initial release.
