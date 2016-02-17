@@ -1281,6 +1281,32 @@ if ( !class_exists( 'send_to_friend' ) ) {
 							} 
 							?>
 
+							var variation_id = 0;
+                            if ( jQuery( ".variation_id" ).length > 0 ) {
+                                variation_id = jQuery( ".variation_id" ).val();
+                            }
+
+                            var field_name = "#wapbk_bookings_placed_" + variation_id;
+                            var variation_bookings_placed = "";
+                            if ( jQuery( field_name ).length > 0 ) {
+                            	variation_bookings_placed = jQuery( field_name ).val();
+                            }
+				    
+                            var attr_bookings_placed = "";
+                            if ( jQuery( "#wapbk_attribute_list").length > 0 ) {
+                               var attribute_list = jQuery( "#wapbk_attribute_list").val().split(",");
+                               
+                                for ( i = 0; i < attribute_list.length; i++ ) {
+                                
+                                    if ( attribute_list[i] != "" && jQuery( "#" + attribute_list[i] ).val() > 0 ) {
+                            
+                                       var field_name = "#wapbk_bookings_placed_" + attribute_list[i];
+                                       if ( jQuery( field_name ).length > 0 ) {
+                                           attr_bookings_placed = attr_bookings_placed + attribute_list[i] + "," + jQuery( field_name ).val() + ";";
+                                       }
+                                   }
+                               }
+                            }
 							// Populate the Booking date
 							jQuery( "#wapbk_hidden_date" ).val( '<?php echo $hidden_date; ?>' );
 							var split = jQuery( "#wapbk_hidden_date" ).val().split( "-" );
@@ -1306,9 +1332,34 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								jQuery( "#ajax_img" ).show();
 								jQuery( ".single_add_to_cart_button" ).hide();	
 								var time_slots_arr = jQuery( "#wapbk_booking_times" ).val();
+
+								var field_name = "#wapbk_timeslot_lockout_" + variation_id;
+                                var time_slot_lockout = "";
+                                if ( jQuery( field_name ).length > 0 ) {
+                                    time_slot_lockout = jQuery( field_name ).val();
+                                }
+					    
+                                var attr_lockout = "";
+                                if ( jQuery( "#wapbk_attribute_list").length > 0 ) {
+                                   var attribute_list = jQuery( "#wapbk_attribute_list").val().split(",");
+                                   
+                                    for ( i = 0; i < attribute_list.length; i++ ) {
+                                    
+                                        if ( attribute_list[i] != "" && jQuery( "#" + attribute_list[i] ).val() > 0 ) {
+                                
+                                           var field_name = "#wapbk_timeslot_lockout_" + attribute_list[i];
+                                           if ( jQuery( field_name ).length > 0 ) {
+                                               attr_lockout = attr_lockout + attribute_list[i] + "," + jQuery( field_name ).val() + ";";
+                                           }
+                                       }
+                                   }
+                                }
 								var data = {
 									current_date: jQuery( "#wapbk_hidden_date" ).val(),
 									post_id: '<?php echo $duplicate_of; ?>', 
+									variation_id: variation_id,
+                                    variation_timeslot_lockout: time_slot_lockout,
+					                attribute_timeslot_lockout: attr_lockout,
 									action: 'bkap_check_for_time_slot'
 									<?php echo $attribute_fields_str; ?>
 								};
@@ -1331,10 +1382,14 @@ if ( !class_exists( 'send_to_friend' ) ) {
 
 										// Availability display for the time slot selected if setting is enabled			
 										if ( "undefined" != typeof time_slot_value && "yes" == jQuery( "#wapbk_availability_display" ).val() ) {
+
 											var data = {
 												checkin_date: jQuery( "#wapbk_hidden_date" ).val(),
 												timeslot_value: time_slot_value,
 												post_id: '<?php echo $duplicate_of; ?>', 
+												variation_id: variation_id,
+		                                        bookings_placed: variation_bookings_placed,
+		                                        attr_bookings_placed: attr_bookings_placed,
 												action: 'bkap_get_time_lockout'
 											};
 											jQuery.post( '<?php echo get_admin_url() . 'admin-ajax.php'; ?>', data, function( response ) {
@@ -1409,38 +1464,11 @@ if ( !class_exists( 'send_to_friend' ) ) {
 								// Availability Display for the date selected only if setting is enabled
 								if ( "yes" == jQuery( "#wapbk_availability_display" ).val() ) {
 
-									var variation_id = 0;
-		                            if ( jQuery( ".variation_id" ).length > 0 ) {
-		                                variation_id = jQuery( ".variation_id" ).val();
-		                            }
-		                                
-		                            var field_name = "#wapbk_bookings_placed_" + variation_id;
-		                            var bookings_placed = "";
-		                            if ( jQuery( field_name ).length > 0 ) {
-		                                bookings_placed = jQuery( field_name ).val();
-		                            }
-							    
-                                    var attr_bookings_placed = "";
-                                    if ( jQuery( "#wapbk_attribute_list").length > 0 ) {
-                                       var attribute_list = jQuery( "#wapbk_attribute_list").val().split(",");
-                                       
-                                        for ( i = 0; i < attribute_list.length; i++ ) {
-                                        
-                                            if ( attribute_list[i] != "" && jQuery( "#" + attribute_list[i] ).val() > 0 ) {
-                                    
-                                               var field_name = "#wapbk_bookings_placed_" + attribute_list[i];
-                                               if ( jQuery( field_name ).length > 0 ) {
-                                                   attr_bookings_placed = attr_bookings_placed + attribute_list[i] + "," + jQuery( field_name ).val() + ";";
-                                               }
-                                           }
-                                       }
-                                    }
-						           
 									var data = {
 											checkin_date: jQuery( "#wapbk_hidden_date" ).val(),
 											post_id: '<?php echo $duplicate_of; ?>',
 											variation_id: variation_id,
-		                                    bookings_placed: bookings_placed,
+		                                    bookings_placed: variation_bookings_placed,
 							                attr_bookings_placed: attr_bookings_placed,
 											action: 'bkap_get_date_lockout'
 											};
