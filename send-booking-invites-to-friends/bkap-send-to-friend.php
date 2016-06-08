@@ -936,9 +936,9 @@ if ( !class_exists( 'send_to_friend' ) ) {
 			$email_content = str_replace( '{{site_name}}', get_option( 'blogname' ), $email_content );
 			
 			// get the booking date and time labels, so they can be used to retrieve data
-			$booking_meta_label = get_option( 'book.item-meta-date' );
-			$booking_time_meta_label = get_option( 'book.item-meta-time' );
-			$checkout_meta_label = trim( strip_tags( get_option( 'checkout.item-meta-date' ) ) );
+			$booking_meta_label = get_option( 'book_item-meta-date' );
+			$booking_time_meta_label = get_option( 'book_item-meta-time' );
+			$checkout_meta_label = trim( strip_tags( get_option( 'checkout_item-meta-date' ) ) );
 				
 			// Product table
 			$product_table = "<table cellpadding='10' border='1'  style='border-collapse:collapse; border-color:Black;'>
