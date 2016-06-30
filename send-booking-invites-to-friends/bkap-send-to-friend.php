@@ -1119,19 +1119,6 @@ if ( !class_exists( 'send_to_friend' ) ) {
 						}
 					}
 					
-					// check if the product is already present in the cart, load the add to cart and qty buttons only if it is not present in the cart 
-					$present_in_cart = 'NO';
-					foreach( WC()->cart->get_cart() as $cart_item_key => $values ) {
-					    $_product = $values[ 'data' ];
-					    if ( $_product->id == $duplicate_of ) {
-					        $present_in_cart = 'YES';
-					        break;
-					    }
-					}
-					if ( isset( $present_in_cart ) && 'NO' == $present_in_cart ) {
-					   // call the below function to ensure that the qty and add to cart button are displayed on a variable product page
-					   woocommerce_single_variation_add_to_cart_button();
-					}
 				} else {
 					$attribute_fields_str = ',tyche: 1';
 				}
