@@ -124,7 +124,7 @@ if ( isset( $session_status ) && true == $session_status ) {
 				<label for="client_name"><?php _e( 'Your name', 'bkap-send-to-friend' ); ?></label>
 			</th>
 			<td>
-				<input type="text" style="width:100%;max-width:400px;" name="client_name" id="client_name" value="<?php echo $order->billing_first_name . " " . $order->billing_last_name; ?>">
+				<input type="text" style="width:100%;max-width:400px;" name="client_name" id="client_name" value="<?php echo $order->get_billing_first_name() . " " . $order->get_billing_last_name(); ?>">
 			</td>
 		</tr>
 		<tr>
@@ -132,7 +132,7 @@ if ( isset( $session_status ) && true == $session_status ) {
 				<label for="client_email"><?php _e( 'Your email', 'bkap-send-to-friend' ); ?></label>
 			</th>
 			<td>
-				<input type="text" style="width:100%;max-width:400px;" name="client_email" id="client_email" value="<?php echo $order->billing_email; ?>">
+				<input type="text" style="width:100%;max-width:400px;" name="client_email" id="client_email" value="<?php echo $order->get_billing_email(); ?>">
 			</td>
 		</tr>
 		<tr>

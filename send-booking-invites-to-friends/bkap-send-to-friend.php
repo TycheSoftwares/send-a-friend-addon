@@ -701,7 +701,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					?> 
 					<br>
 					<a href="<?php echo esc_url_raw( add_query_arg( 'item_id', $item_id, get_permalink( $product_id_to_link ) ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_book_another_button_text' ), 'bkap-send-to-friend' ); ?></a>
-					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->id, $url ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
+					<a href="<?php echo esc_url_raw( add_query_arg( 'order_id', $order->get_id(), $url ) ); ?>" style="<?php echo get_option( 'bkap_friend_button_css' ); ?>"><?php _e( get_option( 'bkap_friend_send_friend_button_text' ), 'bkap-send-to-friend' ); ?></a>
 				<?php 	 
 				}
 			}
@@ -1095,8 +1095,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				// default fields
 				$hidden_date = '';
 				// Set the attribute field string to make sure the ajax for time slots works fine
-				$product = get_product( $duplicate_of );
-				if ( 'variable' == $product->product_type ) {
+				$product = wc_get_product( $duplicate_of );
+				if ( 'variable' == $product->get_type() ) {
 					$variations = $product->get_available_variations();
 					$attributes = $product->get_variation_attributes();
 					$attribute_fields_str = "";
@@ -1129,7 +1129,8 @@ if ( !class_exists( 'send_to_friend' ) ) {
 				$order = new WC_Order( $results_order_id[0]->order_id );
 				
 				// check if the order is refunded, trashed or cancelled
-				if( isset( $order->post_status ) && ( 'wc-cancelled' != $order->post_status ) && ( 'wc-refunded' != $order->post_status ) && ( 'trash' != $order->post_status ) && ( '' != $order->post_status ) && ( 'wc-failed' != $order->post_status ) ) {	
+				$order_status = $order->get_status();
+				if( isset( $order_status ) && ( 'wc-cancelled' != $order_status ) && ( 'wc-refunded' != $order_status ) && ( 'trash' != $order_status ) && ( '' != $order_status ) && ( 'wc-failed' != $order_status ) ) {	
 					$booking_settings = get_post_meta( $duplicate_of, 'woocommerce_booking_settings', true );
 					
 					// get the booking details from the woocommerce_order_itemmeta table
