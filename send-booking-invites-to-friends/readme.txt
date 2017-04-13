@@ -3,8 +3,8 @@
 Contributors: ashokrane, pinal.shah
 Tags: booking, invite friends, woocommerce booking
 Requires at least: 1.4
-Tested up to: 4.5.3
-Stable tag: 4.5.3
+Tested up to: 4.7.3
+Stable tag: 4.7.3
 License: GPLv2 or later
 
 This WordPress plugin extends the WooCommerce Booking and Appointment Plugin by allowing users to send product links to friends via emails.
@@ -42,6 +42,9 @@ Thus the addon provides the ability to share bookings with anyone via email & as
 4. Email sent to a friend.
 
 == Changelog ==
+
+= 1.3 =
+* This update to the addon contains compatibility changes for WooCommerce version 3.0.0 and higher. Backward compatibility with lower versions of WooCommerce has been retained.
 
 = 1.2 = 
 * Fixed an issue where warnings were displayed on the front-end product page for a variable product using attribute or variation level booking lockout.
