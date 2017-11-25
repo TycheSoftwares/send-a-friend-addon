@@ -12,6 +12,7 @@ Author URI: http://www.tychesoftwares.com/
  **/
 load_plugin_textdomain( 'bkap-send-to-friend', false, dirname( plugin_basename( __FILE__ ) ) . '/' );
 include_once( dirname( __FILE__ ) . '/bkap_tell_a_friend_page.php' );
+include_once( plugin_dir_path( __DIR__ ) .'woocommerce-booking/bkap-common.php' );
 
 function is_bkap_send_friend_active() {
 	if ( is_plugin_active( 'send-booking-invites-to-friends/bkap-send-to-friend.php' ) ) {
@@ -1158,7 +1159,7 @@ if ( !class_exists( 'send_to_friend' ) ) {
 					if ( isset( $booking_details[ '_wapbk_booking_date' ] ) ) {
 						$booking_date = $booking_details[ '_wapbk_booking_date' ];	
 						// Date formats
-						$date_formats = bkap_get_book_arrays( 'date_formats' );
+						$date_formats = bkap_get_book_arrays( 'bkap_date_formats' );
 						// get the global settings to find the date & time formats
 						$global_settings = json_decode( get_option( 'woocommerce_booking_global_settings' ) );
 						$date_format_set = $date_formats[$global_settings->booking_date_format];
