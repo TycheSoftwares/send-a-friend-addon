@@ -1,12 +1,18 @@
 <?php 
-/*
-Plugin Name: Send to a Friend Addon
-Plugin URI: https://www.tychesoftwares.com/store/premium-plugins/send-to-friend-addon-woocommerce-booking-appointment-plugin
-Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products. To get started: Go to <strong>Dashboard -> <a href="admin.php?page=woocommerce_booking_page&action=addon_settings">Booking</a></strong>. 
-Version: 1.3
-Author: Tyche Softwares
-Author URI: http://www.tychesoftwares.com/
-*/
+/**
+ * Plugin Name: Send to a Friend Addon
+ * Plugin URI: https://www.tychesoftwares.com/store/premium-plugins/send-to-friend-addon-woocommerce-booking-appointment-plugin
+ * Description: This is an addon for the WooCommerce Booking & Appointment Plugin which allows the end users to send product links to friends or book extra slots for bookable products. To get started: Go to <strong>Dashboard -> <a href="admin.php?page=woocommerce_booking_page&action=addon_settings">Booking</a></strong>.
+ * Version: 1.4
+ * Author: Tyche Softwares
+ * Author URI: http://www.tychesoftwares.com/
+ * Requires PHP: 5.6
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.6.4
+ *
+ * @package bkap-stf
+ */
+
 /**
  * Localisation
  **/
