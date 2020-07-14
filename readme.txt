@@ -42,6 +42,8 @@ Thus the addon provides the ability to share bookings with anyone via email & as
 4. Email sent to a friend.
 
 == Changelog ==
+= 1.4.1 =
+* Made the send a friend email page template WPCS compliant.
 
 = 1.3 =
 * This update to the addon contains compatibility changes for WooCommerce version 3.0.0 and higher. Backward compatibility with lower versions of WooCommerce has been retained.
